@@ -12,7 +12,9 @@ module.exports = {
                 return res.status(500).json({
                     success: 0,
                     message: "Database connection error",
-                    data: body
+                    data: body,
+                    err: err
+                    
                 });
             }
             return res.status(200).json({
