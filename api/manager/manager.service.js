@@ -38,10 +38,13 @@ module.exports = {
         )
         
     },
-    getDate : (date , callBack) =>{
+    checkDateGround : (data , callBack) =>{
         pool.query(
-            `SELECT date FROM matches WHERE date = ?`,
-            [date],
+            `SELECT date,ground FROM matches WHERE date = ? && ground = ?`,
+            [
+                data.date,
+                data.ground
+            ],
             (error,results,fields) => {
                 if(error){
                     console.log("getDate error :" , error);
