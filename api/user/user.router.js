@@ -1,4 +1,4 @@
-const {createUser , selectEmployees ,selectPlayer,loginn} = require("./user.controller");
+const {createUser , selectEmployees ,selectPlayer, loginn} = require("./user.controller");
 const router = require("express").Router();
 
 router.post("/", createUser);

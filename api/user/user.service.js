@@ -85,7 +85,7 @@ module.exports = {
             ],
             (error,results,fields) => {
                 if(error){
-                    console.log("getDate error :" , error);
+                    console.log("select_contact error :" , error);
                     return callBack(error);
                 }
                 return callBack(null, results);
@@ -94,13 +94,13 @@ module.exports = {
     },
     select_email: (data , callBack) => {
         pool.query(
-            `SELECT contact FROM user WHERE email = ? `,
+            `SELECT email FROM user WHERE email = ? `,
             [
-                data.contact
+                data.e_mail
             ],
             (error,results,fields) => {
                 if(error){
-                    console.log("getDate error :" , error);
+                    console.log("select_email error :" , error);
                     return callBack(error);
                 }
                 return callBack(null, results);
@@ -109,13 +109,13 @@ module.exports = {
     },
     select_nic: (data , callBack) => {
         pool.query(
-            `SELECT contact FROM user WHERE nic = ? `,
+            `SELECT nic FROM user WHERE nic = ? `,
             [
-                data.contact
+                data.nic
             ],
             (error,results,fields) => {
                 if(error){
-                    console.log("getDate error :" , error);
+                    console.log("select_nic error :" , error);
                     return callBack(error);
                 }
                 return callBack(null, results);
