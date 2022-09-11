@@ -82,11 +82,15 @@ module.exports = {
             message: "Database connection error",
             data: body,
             err: err,
+            validate : validate
           });
         }
+        validate[3] = "User Registration Successfull";
+
         return res.status(200).json({
           success: 1,
           data: results,
+          validate : validate
         });
       });
     } else {
@@ -103,6 +107,11 @@ module.exports = {
         if (length_nic != 0) {
           validate[2] = "NIC Already Used!";
         }
+
+        if(length_contact == 0 && length_email == 0 && length_nic == 0) {
+            validate[3] = "User Registration Successfull";
+        }
+
       return res.json({
         data: "adoooo",
         email: length_email,
@@ -169,7 +178,11 @@ module.exports = {
           });
         }
       }
-    });
+    },
+    
+    );
+
+    
     // const accessToken = jwt.sign({nic: body.email},process.env.TOKEN,{expiresIn: 60*60*24})
     //              console.log("passwords are matched");
     // return res.json({
