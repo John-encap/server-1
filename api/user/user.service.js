@@ -76,4 +76,51 @@ module.exports = {
         )
         
     },
+
+    select_contact: (data , callBack) => {
+        pool.query(
+            `SELECT contact FROM user WHERE contact = ? `,
+            [
+                data.contact
+            ],
+            (error,results,fields) => {
+                if(error){
+                    console.log("select_contact error :" , error);
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    select_email: (data , callBack) => {
+        pool.query(
+            `SELECT email FROM user WHERE email = ? `,
+            [
+                data.e_mail
+            ],
+            (error,results,fields) => {
+                if(error){
+                    console.log("select_email error :" , error);
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    select_nic: (data , callBack) => {
+        pool.query(
+            `SELECT nic FROM user WHERE nic = ? `,
+            [
+                data.nic
+            ],
+            (error,results,fields) => {
+                if(error){
+                    console.log("select_nic error :" , error);
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    
 }

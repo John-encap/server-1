@@ -1,12 +1,12 @@
 // const jwt =require("jsonwebtoken");
 const { _getDate } = require("lanka-nic");
-const { create, getMatch, getDate,  addSession } = require("./manager.service");
+const { create, getMatch, checkDateGround,  addSession } = require("./manager.service");
 
 module.exports = {
   AddTournament: (req, res) => {
     const body = req.body;
 
-    getDate(body.date, (err, results) => {
+    checkDateGround(body , (err, results) => {
       if (err) {
         console.log("SelectDate getDate error : ", err);
         return res.status(500).json({
@@ -44,7 +44,7 @@ module.exports = {
       else{
 
         return res.json({
-            validation: "Date is allready booked",
+            validation: `ground is allready booked for ${body.date}`,
           });
       }
 
