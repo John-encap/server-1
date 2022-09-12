@@ -1,28 +1,12 @@
 const pool=require("../../config/database");
-const {genSaltSync,hashSync}=require("bcrypt");
-const lankaNIC = require("lanka-nic");
+
 
 module.exports = {
     create: (data,callBack) =>{
-        let { gender } = lankaNIC.getInfoFromNIC(data.nic);
-        const salt = genSaltSync(10);
-        const password = hashSync(data.nic, salt);
-        if(data.role=="bawling"||data.role=="batting"||data.role=="allrounder"){
-            data.role="player"
-        }
-        console.log(data.name)
-        pool.query(
+            pool.query(
             `INSERT INTO user ( name,nic,contact,email,address,role,gender,password) VALUES ( ?,?,?,?,?,?,?,?)`,
             [
-                
                 data.name,
-                data.nic,
-                data.contact,
-                data.e_mail,
-                data.address,
-                data.role,
-                gender,
-                password
             ],
             (error,results,fields)=>{
                 if(error){
@@ -62,9 +46,12 @@ module.exports = {
         )
         
     },
-    login: (email,callBack) =>{
+
+
+    // Get Batting performance for player 
+    GetBattingPerformance: (email,callBack) =>{
         pool.query(
-            `SELECT name, gender, nic, contact, email, address,role,password,user_id FROM user WHERE email=?`,
+            `SELECT name, gender, nic, contact, email, address,role,password FROM user WHERE email=?`,
             [email],
              
             (error,results,fields)=>{
@@ -76,4 +63,24 @@ module.exports = {
         )
         
     },
+
+
+
+    // Get sessions for player 
+    GetSessions: (user_id,callBack) =>{
+        pool.query(
+            `SELECT * FROM practice_sessions WHERE user_id=?` ,
+            [user_id],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+        
+    },
+
+
 }

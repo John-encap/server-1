@@ -22,6 +22,9 @@
     "jsonwebtoken": "^8.5.1",
     "lanka-nic": "^1.0.0",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "react-redux": "^8.0.2",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1"
   }
 }
