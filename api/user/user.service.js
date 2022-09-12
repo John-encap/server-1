@@ -36,6 +36,7 @@ module.exports = {
     );
   },
 
+
   getEmployee: (callBack) => {
     pool.query(
       `SELECT name, gender, nic, contact, email, address,role FROM user WHERE role='coach' OR role='manager'`,
