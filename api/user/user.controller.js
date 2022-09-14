@@ -148,6 +148,8 @@ module.exports = {
       });
     });
   },
+
+  
   loginn: (req, res) => {
     const body = req.body;
     // const salt = genSaltSync(10);
