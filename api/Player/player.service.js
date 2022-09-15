@@ -25,7 +25,7 @@ module.exports = {
     // Get sessions for player 
     GetSessions: (body,callBack) =>{
         pool.query(
-            `SELECT * FROM practice_sessions WHERE user_id=? and date like ?` ,
+            `SELECT practice_sessions.session_id,practice_sessions.date,practice_sessions.time,practice_sessions.type,player_practice_session.user_id as player_id,practice_sessions.user_id as coach_id,user.name  FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id = player_practice_session.session_id INNER JOIN user ON practice_sessions.user_id=user.user_id WHERE player_practice_session.user_id=? and date like ?` ,
             [body.user_id,body.month+'%'],
              
             (error,results,fields)=>{
@@ -37,24 +37,35 @@ module.exports = {
         )
         
     },
-    GetSessionDetails: (body,callBack) =>{
-        // pool.query(
-        //     `SELECT * FROM practice_sessions WHERE user_id=? and date like ?` ,
-        //     [body.user_id,body.month+'%'],
+    GetSessionPlayers: (body,callBack) =>{
+        pool.query(
+            `SELECT user.name, user.user_id AS player_ids,practice_sessions.type,practice_sessions.time,practice_sessions.date FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id=player_practice_session.session_id INNER JOIN user ON player_practice_session.user_id=user.user_id WHERE practice_sessions.session_id=?;` ,
+            [body],
              
-        //     (error,results,fields)=>{
-        //         if(error){
-        //             return callBack(error);
-        //         }
-        //         return callBack(null,results); 
-        //     }
-        // )
-
-        
-        console.log(7)
-        
-        
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
     },
+
+    GetSessionCoach: (body,callBack) =>{
+        pool.query(
+            `SELECT user.name, user.user_id AS coach_ids FROM practice_sessions INNER JOIN coach_join_practice_session ON practice_sessions.session_id=coach_join_practice_session.session_id INNER JOIN user ON coach_join_practice_session.user_id=user.user_id WHERE practice_sessions.session_id=?;` ,
+            [body],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+
+    
 
 
 }
