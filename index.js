@@ -13,6 +13,7 @@ app.use(function(req, res, next) {
 require("dotenv").config();
 const userRouter = require("./api/user/user.router");
 const playerRouter = require("./api/Player/player.router");
+const matchRouter = require("./api/Player/match.router");
 const managerRouter = require("./api/manager/manager.router");
 
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/user", userRouter);
 app.use("/api/player", playerRouter);
+app.use("/api/match", matchRouter);
 app.use("/api/manager" , managerRouter);
 
 
