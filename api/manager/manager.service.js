@@ -85,6 +85,53 @@ module.exports = {
                 return callBack(null,results);
             }
         )
-    }
+    },
+    selectPaidPlayer: callBack =>{
+        pool.query(
+            `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
+        
+            ["player"],
+            (error,results,fields)=>{
+                if(error){
+                    console.log("getMatch error", error)
+                    return callBack(error);
+                }
+                return callBack(null,results);
+            }
+        )
+    },
+    selectUnpaidPlayer: callBack => {
+        pool.query(
+            // `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
+            // `SELECT user.user_id, payment.payment_id FROM payment FULL JOIN user ON payment.user_id = user.user_id WHERE user.role = ? `,
+            `SELECT name , user_id, role
+            FROM user
+            WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id)`,
+            [],
+            (error,results,fields)=>{
+                if(error){
+                    console.log("getMatch error", error)
+                    return callBack(error);
+                }
+                return callBack(null,results);
+            }
+        )
+    },
+    getPassword:(data , callBack) =>{
+        pool.query(
+            `SELECT password FROM user WHERE nic = ?`,
+            [
+                data.nic
+            ],
+            (error,results,fields) => {
+                if(error){
+                    console.log("getDate error :" , error);
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+
+        )
+    },
 
 }

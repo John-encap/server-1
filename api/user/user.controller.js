@@ -6,6 +6,7 @@ const {
   select_contact,
   select_email,
   select_nic,
+  select_player,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -147,6 +148,8 @@ module.exports = {
       });
     });
   },
+
+  
   loginn: (req, res) => {
     const body = req.body;
     // const salt = genSaltSync(10);
@@ -178,20 +181,33 @@ module.exports = {
           });
         }
       }
+
+
     },
+
     
     );
 
-    
-    // const accessToken = jwt.sign({nic: body.email},process.env.TOKEN,{expiresIn: 60*60*24})
-    //              console.log("passwords are matched");
-    // return res.json({
-    //                     success: 1,
-    //                     data: "manager",
-    //                     message: body.password,
-    //                     token: accessToken
-    //                 });
   },
+
+  showPlayer:(req, res) => {
+    const data = req.body;
+    select_player(data, (err, results)=>{
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+              success: 0,
+              message: "Database connection error",
+              data: body,
+              err: err,
+            });
+          }
+
+          return res.status(200).json({
+            res_data:results,
+          });
+    });
+  }
 };
 
 
