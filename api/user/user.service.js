@@ -14,9 +14,18 @@ module.exports = {
     ) {
       data.role = "player";
     }
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+  
+    const currentDate = `${year}-${month}-${day}`;
+
+    console.log(currentDate);
     console.log(data.name);
     pool.query(
-      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password) VALUES ( ?,?,?,?,?,?,?,?)`,
+      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password,date) VALUES ( ?,?,?,?,?,?,?,?,?)`,
       [
         data.name,
         data.nic,
@@ -26,6 +35,7 @@ module.exports = {
         data.role,
         gender,
         password,
+        currentDate,
       ],
       (error, results, fields) => {
         if (error) {

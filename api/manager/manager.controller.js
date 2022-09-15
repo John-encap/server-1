@@ -8,12 +8,16 @@ const {
   selectPaidPlayer,
   selectUnpaidPlayer,
   getPassword,
+  checkMatchExist,
+  insertEvent,
+  checkEventExist,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 let pass = "";
 let comp = "";
+
 
 module.exports = {
   AddTournament: (req, res) => {
@@ -193,32 +197,75 @@ module.exports = {
 
        }
         
-      }
-      
+      }  
 
-      
+    });
+  },
+
+  AddEvent: (req,res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    const data = req.body;
+    
+    checkEventExist(data,(err,result)=>{
+      if(err){
+        return res.status(500).json({
+          success:0,
+          error:err,
+        })
+      }
+      eventExist = Object.keys(result).length;
+
+      if(eventExist == 0){
+        checkMatchExist(data,(err,result)=>{
+          if(err){
+            return res.status(500).json({
+              success:0,
+              error:err,
+            })
+          }
+          matchExist = Object.keys(result).length;
+
+          if(matchExist == 0){
+            insertEvent(data,(err,result)=>{
+              if(err){
+                return res.status(500).json({
+                  success:0,
+                  error:err,
+                })
+              }
+        
+              return res.json({
+                success:1,
+                data: result,
+              })
+            });
+          }
+
+          return res.json({
+            match:result,
+            matchExist:matchExist,
+          })
+        });
+      }
+      return res.json({
+        event:result,
+        eventExist:eventExist,
+      })
 
     });
 
-    // comp = compareSync(data.password , pass);
+   
 
-    // if (comp) {
-    //   console.log("passwords are matched");
-    //   return res.json({
-    //     success: 1,
-    //     // data: pass,
-    //     comp:comp,
-    //     message: "password is matched",
-    //     // token: accessToken,
-    //   });
+    // if(matchExist == 0 && eventExist == 0 ){
+      
+    // }else{
+      // return res.json({
+      //   matchExist:matchExist,
+      //   eventExist:eventExist,
+      // })
     // }
-
-    // return res.json({
-    //   success: 0,
-    //   message: "Password not match",
-    //   // data: body,
-    //   // err: err,
-    // });
     
-  },
+
+  }
 };

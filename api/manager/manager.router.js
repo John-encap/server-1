@@ -1,5 +1,5 @@
 // const { route } = require("../user/user.router");
-const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword} = require("./manager.controller");
+const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent} = require("./manager.controller");
 
 const router = require("express").Router();
 
@@ -10,6 +10,8 @@ router.post("/AddCouncellingSession", AddSession);
 router.get("/payment/paid", PaidPlayer);
 router.get("/payment/unpaid", UnpaidPlayer);
 router.post("/getPassword", CheckPassword);
+router.post("/addevent", AddEvent);
+
 
 
 

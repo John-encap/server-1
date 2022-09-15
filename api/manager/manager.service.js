@@ -133,5 +133,48 @@ module.exports = {
 
         )
     },
+    checkMatchExist:(data ,callBack) => {
+        pool.query(
+            `SELECT date, match_format FROM matches WHERE date = ?`,
+            [data.date],
+            (error,results,fields) => {
+                if(error){
+                    console.log("get match error : ", error);
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    checkEventExist:(data,callBack)=>{
+        pool.query(
+            `SELECT event_name, date FROM events WHERE date = ?`,
+            [data.date],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    insertEvent:(data, callBack)=>{
+
+        pool.query(
+            `INSERT INTO events (event_name, date, time, description) VALUES (?,?,?,?) `,
+            [
+                data.name,
+                data.date,
+                data.time,
+                data.description,
+            ],
+            (error,results,fields) =>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results);
+            }
+        )
+    }
 
 }
