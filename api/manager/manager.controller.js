@@ -216,7 +216,7 @@ module.exports = {
       }
       eventExist = Object.keys(result).length;
 
-      if(eventExist == 0){
+      if(eventExist === 0){
         checkMatchExist(data,(err,result)=>{
           if(err){
             return res.status(500).json({
@@ -226,7 +226,7 @@ module.exports = {
           }
           matchExist = Object.keys(result).length;
 
-          if(matchExist == 0){
+          if(matchExist === 0){
             insertEvent(data,(err,result)=>{
               if(err){
                 return res.status(500).json({
@@ -240,18 +240,20 @@ module.exports = {
                 data: result,
               })
             });
+          }else{
+            return res.json({
+              match:result,
+              matchExist:matchExist,
+            })
           }
-
-          return res.json({
-            match:result,
-            matchExist:matchExist,
-          })
         });
+      }else{
+        return res.json({
+          event:result,
+          eventExist:eventExist,
+        })
       }
-      return res.json({
-        event:result,
-        eventExist:eventExist,
-      })
+      
 
     });
 
