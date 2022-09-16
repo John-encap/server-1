@@ -236,20 +236,23 @@ module.exports = {
               }
         
               return res.json({
+                message:`Event Added Successfully`,
                 success:1,
                 data: result,
               })
             });
           }else{
             return res.json({
-              match:result,
+              message:`Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success:0,
               matchExist:matchExist,
             })
           }
         });
       }else{
         return res.json({
-          event:result,
+          message:`Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success:0,
           eventExist:eventExist,
         })
       }
