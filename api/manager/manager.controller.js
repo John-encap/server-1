@@ -16,6 +16,8 @@ const {
   getOldEvent,
   getUpcommingSession,
   getOldSession,
+  getEvent,
+  getSession,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -385,6 +387,42 @@ module.exports = {
   GetOldSession:(req,res)=>{
     var CurrentDate = new Date();
     getOldSession(CurrentDate,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  },
+  SelectEvent:(req,res)=>{
+    const data = req.body;
+    getEvent(data.id,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  },
+  SelectSession:(req,res)=>{
+    const data = req.body;
+    getSession(data.id,(err,results)=>{
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
