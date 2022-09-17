@@ -237,6 +237,30 @@ module.exports = {
                 return callBack(null, results);
             }
         )
+    },
+    getEvent:(data,callBack)=>{
+        pool.query(
+            `SELECT * FROM events WHERE event_id = ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getSession:(data,callBack)=>{
+        pool.query(
+            `SELECT * FROM counseling_session WHERE c_session_id = ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     }
 
 }
