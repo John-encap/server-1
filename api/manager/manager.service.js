@@ -175,6 +175,68 @@ module.exports = {
                 return callBack(null,results);
             }
         )
+    },
+    checkSessionExist: (data, callBack)=>{
+        pool.query(
+            `SELECT title, date FROM counseling_session WHERE date = ?`,
+            [data.date],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getUpcommingEvent:(data,callBack)=>{
+        
+        pool.query(
+            `SELECT * FROM events WHERE date >= ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getOldEvent:(data,callBack)=>{
+        pool.query(
+            `SELECT * FROM events WHERE date < ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+    getUpcommingSession:(data,callBack)=>{
+        pool.query(
+            `SELECT * FROM counseling_session WHERE date >= ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
+
+    getOldSession:(data,callBack)=>{
+        pool.query(
+            `SELECT * FROM counseling_session WHERE date < ?`,
+            [data],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     }
 
 }

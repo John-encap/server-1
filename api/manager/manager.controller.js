@@ -11,6 +11,11 @@ const {
   checkMatchExist,
   insertEvent,
   checkEventExist,
+  checkSessionExist,
+  getUpcommingEvent,
+  getOldEvent,
+  getUpcommingSession,
+  getOldSession,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -104,25 +109,7 @@ module.exports = {
     });
   },
 
-  AddSession: (req, res) => {
-    const body = req.body;
-
-    addSession(body, (err, results) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          success: 0,
-          message: "Database connection error",
-          data: body,
-          err: err,
-        });
-      }
-      return res.status(200).json({
-        success: 1,
-        data: results,
-      });
-    });
-  },
+    
   PaidPlayer: (req, res) => {
     selectPaidPlayer((err, results) => {
       if (err) {
@@ -260,17 +247,159 @@ module.exports = {
 
     });
 
-   
 
-    // if(matchExist == 0 && eventExist == 0 ){
+  },
+  AddSession: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    let sessionExist = 0;
+    const data = req.body;
+
+    checkEventExist(data,(err,result)=>{
+      if(err){
+        return res.status(500).json({
+          success:0,
+          error:err,
+        })
+      }
+      eventExist = Object.keys(result).length;
+
+      if(eventExist === 0){
+        checkMatchExist(data,(err,result)=>{
+          if(err){
+            return res.status(500).json({
+              success:0,
+              error:err,
+            })
+          }
+          matchExist = Object.keys(result).length;
+
+          if(matchExist === 0){
+            checkSessionExist(data,(err,result)=>{
+              if(err){
+                return res.status(500).json({
+                  success:0,
+                  error:err,
+                })
+              }
+              eventExist = Object.keys(result).length;
+
+              if(eventExist === 0){
+                addSession(data,(err,result)=>{
+                  if(err){
+                    return res.status(500).json({
+                      success:0,
+                      error:err,
+                    })
+                  }
+            
+                  return res.json({
+                    message:`Session Added Successfully`,
+                    success:1,
+                    data: result,
+                  })
+                })
+              }else{
+                return res.json({
+                  message:`Already Have "${result[0].title}" Session on "${result[0].date}"`,
+                  success:0,
+                  data: result,
+                })
+              }
+            })
+          }else{
+            return res.json({
+              message:`Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success:0,
+              matchExist:matchExist,
+            })
+          }
+        });
+      }else{
+        return res.json({
+          message:`Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success:0,
+          eventExist:eventExist,
+        })
+      }
       
-    // }else{
-      // return res.json({
-      //   matchExist:matchExist,
-      //   eventExist:eventExist,
-      // })
-    // }
-    
 
+    });
+  },
+  GetUpcommingEvent:(req,res)=>{
+    var CurrentDate = new Date();
+    getUpcommingEvent(CurrentDate,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+  GetOldEvent:(req,res)=>{
+    var CurrentDate = new Date();
+    getOldEvent(CurrentDate,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  },
+
+  GetUpcommingSession:(req,res)=>{
+    var CurrentDate = new Date();
+    getUpcommingSession(CurrentDate,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  },
+
+  GetOldSession:(req,res)=>{
+    var CurrentDate = new Date();
+    getOldSession(CurrentDate,(err,results)=>{
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
   }
+
+
 };
