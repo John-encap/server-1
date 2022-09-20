@@ -21,6 +21,8 @@ const {
   getTeamAchi,
   addTeamAchi,
   addMembership,
+  playerRole,
+  deleteEvent,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -466,9 +468,9 @@ module.exports = {
     });
   },
 
-  AddMembership:(req,res)=>{
+  AddMembership: (req, res) => {
     const data = req.body;
-    addMembership(data,(err,results) => {
+    addMembership(data, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -482,6 +484,89 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
-  }
+    });
+  },
+
+  PlayerRole: (req, res) => {
+    const data = req.body;
+    playerRole(data, (err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+  EditEvent: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    const data = req.body;
+
+    deleteEvent(data, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          error: err,
+        });
+      }
+      checkEventExist(data, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            success: 0,
+            error: err,
+          });
+        }
+        eventExist = Object.keys(result).length;
+
+        if (eventExist === 0) {
+          checkMatchExist(data, (err, result) => {
+            if (err) {
+              return res.status(500).json({
+                success: 0,
+                error: err,
+              });
+            }
+            matchExist = Object.keys(result).length;
+
+            if (matchExist === 0) {
+              insertEvent(data, (err, result) => {
+                if (err) {
+                  return res.status(500).json({
+                    success: 0,
+                    error: err,
+                  });
+                }
+
+                return res.json({
+                  message: `Event Added Successfully`,
+                  success: 1,
+                  data: result,
+                });
+              });
+            } else {
+              return res.json({
+                message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+                success: 0,
+                matchExist: matchExist,
+              });
+            }
+          });
+        } else {
+          return res.json({
+            message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+            success: 0,
+            eventExist: eventExist,
+          });
+        }
+      });
+    });
+  },
 };

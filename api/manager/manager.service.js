@@ -278,4 +278,29 @@ module.exports = {
       }
     );
   },
+
+  playerRole:(data, callBack)=>{
+    pool.query(
+        `SELECT * FROM player WHERE user_id = ?`,
+        [data.user_id],
+        (error, results, fields) => {
+            if (error) {
+              return callBack(error);
+            }
+            return callBack(null, results);
+          }
+    );
+  },
+  deleteEvent:(data, callBack)=>{
+    pool.query(
+      `DELETE FROM EVENTS WHERE EVENT_ID = ?`,
+      [data.event_id],
+      (error, results, fields) => {
+          if (error) {
+            return callBack(error);
+          }
+          return callBack(null, results);
+        }
+  );
+  }
 };
