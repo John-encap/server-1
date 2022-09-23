@@ -302,5 +302,26 @@ module.exports = {
           return callBack(null, results);
         }
   );
+  },
+  editSession:(data, callBack) => {
+    pool.query(
+      
+      `UPDATE counseling_session SET title = $1 , date= $2, time = $3, mentor = $4, mentor_details = $5, place = $6 WHERE c_session_id = $7`,
+      [
+        data.title,
+        data.date,
+        data.time,
+        data.mentor,
+        data.mentor_datails,
+        data.place,
+        data.session_id
+      ],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    )
   }
 };
