@@ -18,13 +18,18 @@ const {
   getOldSession,
   getEvent,
   getSession,
+  getTeamAchi,
+  addTeamAchi,
+  addMembership,
+  playerRole,
+  deleteEvent,
+  editSession,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 let pass = "";
 let comp = "";
-
 
 module.exports = {
   AddTournament: (req, res) => {
@@ -111,7 +116,6 @@ module.exports = {
     });
   },
 
-    
   PaidPlayer: (req, res) => {
     selectPaidPlayer((err, results) => {
       if (err) {
@@ -158,98 +162,89 @@ module.exports = {
           err: err,
         });
       }
-      if(!result){
-        console.log(result)
+      if (!result) {
+        console.log(result);
         return res.status(500).json({
           success: 0,
         });
       }
-      if(result){ 
-        console.log(result)
+      if (result) {
+        console.log(result);
         pass = result[0].password;
         console.log(pass.password);
-        comp = compareSync(data.password , pass);
-       if(comp) {
-        return res.json({
-          // success: 1,
-          pass:data.password,
-          data: pass,
-          comp: comp,
-          message: "password is matched",
-        });
-       }
-       else{
-        return res.json({
-          
-          message: "password is not matched",
-        });
-
-       }
-        
-      }  
-
+        comp = compareSync(data.password, pass);
+        if (comp) {
+          return res.json({
+            // success: 1,
+            pass: data.password,
+            data: pass,
+            comp: comp,
+            message: "password is matched",
+          });
+        } else {
+          return res.json({
+            message: "password is not matched",
+          });
+        }
+      }
     });
   },
 
-  AddEvent: (req,res) => {
+  AddEvent: (req, res) => {
     let eventExist = 0;
     let matchExist = 0;
     const data = req.body;
-    
-    checkEventExist(data,(err,result)=>{
-      if(err){
+
+    checkEventExist(data, (err, result) => {
+      if (err) {
         return res.status(500).json({
-          success:0,
-          error:err,
-        })
+          success: 0,
+          error: err,
+        });
       }
       eventExist = Object.keys(result).length;
 
-      if(eventExist === 0){
-        checkMatchExist(data,(err,result)=>{
-          if(err){
+      if (eventExist === 0) {
+        checkMatchExist(data, (err, result) => {
+          if (err) {
             return res.status(500).json({
-              success:0,
-              error:err,
-            })
+              success: 0,
+              error: err,
+            });
           }
           matchExist = Object.keys(result).length;
 
-          if(matchExist === 0){
-            insertEvent(data,(err,result)=>{
-              if(err){
+          if (matchExist === 0) {
+            insertEvent(data, (err, result) => {
+              if (err) {
                 return res.status(500).json({
-                  success:0,
-                  error:err,
-                })
+                  success: 0,
+                  error: err,
+                });
               }
-        
+
               return res.json({
-                message:`Event Added Successfully`,
-                success:1,
+                message: `Event Added Successfully`,
+                success: 1,
                 data: result,
-              })
+              });
             });
-          }else{
+          } else {
             return res.json({
-              message:`Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
-              success:0,
-              matchExist:matchExist,
-            })
+              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success: 0,
+              matchExist: matchExist,
+            });
           }
         });
-      }else{
+      } else {
         return res.json({
-          message:`Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
-          success:0,
-          eventExist:eventExist,
-        })
+          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success: 0,
+          eventExist: eventExist,
+        });
       }
-      
-
     });
-
-
   },
   AddSession: (req, res) => {
     let eventExist = 0;
@@ -257,80 +252,78 @@ module.exports = {
     let sessionExist = 0;
     const data = req.body;
 
-    checkEventExist(data,(err,result)=>{
-      if(err){
+    checkEventExist(data, (err, result) => {
+      if (err) {
         return res.status(500).json({
-          success:0,
-          error:err,
-        })
+          success: 0,
+          error: err,
+        });
       }
       eventExist = Object.keys(result).length;
 
-      if(eventExist === 0){
-        checkMatchExist(data,(err,result)=>{
-          if(err){
+      if (eventExist === 0) {
+        checkMatchExist(data, (err, result) => {
+          if (err) {
             return res.status(500).json({
-              success:0,
-              error:err,
-            })
+              success: 0,
+              error: err,
+            });
           }
           matchExist = Object.keys(result).length;
 
-          if(matchExist === 0){
-            checkSessionExist(data,(err,result)=>{
-              if(err){
+          if (matchExist === 0) {
+            checkSessionExist(data, (err, result) => {
+              if (err) {
                 return res.status(500).json({
-                  success:0,
-                  error:err,
-                })
+                  success: 0,
+                  error: err,
+                });
               }
               eventExist = Object.keys(result).length;
 
-              if(eventExist === 0){
-                addSession(data,(err,result)=>{
-                  if(err){
+              if (eventExist === 0) {
+                addSession(data, (err, result) => {
+                  if (err) {
                     return res.status(500).json({
-                      success:0,
-                      error:err,
-                    })
+                      success: 0,
+                      error: err,
+                    });
                   }
-            
+
                   return res.json({
-                    message:`Session Added Successfully`,
-                    success:1,
+                    message: `Session Added Successfully`,
+                    success: 1,
                     data: result,
-                  })
-                })
-              }else{
+                  });
+                });
+              } else {
                 return res.json({
-                  message:`Already Have "${result[0].title}" Session on "${result[0].date}"`,
-                  success:0,
+                  message: `Already Have "${result[0].title}" Session on "${result[0].date}"`,
+                  success: 0,
                   data: result,
-                })
+                });
               }
-            })
-          }else{
+            });
+          } else {
             return res.json({
-              message:`Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
-              success:0,
-              matchExist:matchExist,
-            })
+              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success: 0,
+              matchExist: matchExist,
+            });
           }
         });
-      }else{
+      } else {
         return res.json({
-          message:`Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
-          success:0,
-          eventExist:eventExist,
-        })
+          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success: 0,
+          eventExist: eventExist,
+        });
       }
-      
-
     });
   },
-  GetUpcommingEvent:(req,res)=>{
+  GetUpcommingEvent: (req, res) => {
     var CurrentDate = new Date();
-    getUpcommingEvent(CurrentDate,(err,results)=>{
+    getUpcommingEvent(CurrentDate, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -346,9 +339,9 @@ module.exports = {
       });
     });
   },
-  GetOldEvent:(req,res)=>{
+  GetOldEvent: (req, res) => {
     var CurrentDate = new Date();
-    getOldEvent(CurrentDate,(err,results)=>{
+    getOldEvent(CurrentDate, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -362,12 +355,12 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
+    });
   },
 
-  GetUpcommingSession:(req,res)=>{
+  GetUpcommingSession: (req, res) => {
     var CurrentDate = new Date();
-    getUpcommingSession(CurrentDate,(err,results)=>{
+    getUpcommingSession(CurrentDate, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -381,12 +374,12 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
+    });
   },
 
-  GetOldSession:(req,res)=>{
+  GetOldSession: (req, res) => {
     var CurrentDate = new Date();
-    getOldSession(CurrentDate,(err,results)=>{
+    getOldSession(CurrentDate, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -400,11 +393,11 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
+    });
   },
-  SelectEvent:(req,res)=>{
+  SelectEvent: (req, res) => {
     const data = req.body;
-    getEvent(data.id,(err,results)=>{
+    getEvent(data.id, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -418,11 +411,11 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
+    });
   },
-  SelectSession:(req,res)=>{
+  SelectSession: (req, res) => {
     const data = req.body;
-    getSession(data.id,(err,results)=>{
+    getSession(data.id, (err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
         return res.status(500).json({
@@ -436,8 +429,221 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
-  }
+    });
+  },
 
+  GetTeamAchi: (req, res) => {
+    getTeamAchi((err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
 
+  AddTeamAchi: (req, res) => {
+    const data = req.body;
+    addTeamAchi(data, (err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+
+  AddMembership: (req, res) => {
+    const data = req.body;
+    addMembership(data, (err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+
+  PlayerRole: (req, res) => {
+    const data = req.body;
+    playerRole(data, (err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+  EditEvent: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    const data = req.body;
+
+    deleteEvent(data, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          error: err,
+        });
+      }
+      checkEventExist(data, (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            success: 0,
+            error: err,
+          });
+        }
+        eventExist = Object.keys(result).length;
+
+        if (eventExist === 0) {
+          checkMatchExist(data, (err, result) => {
+            if (err) {
+              return res.status(500).json({
+                success: 0,
+                error: err,
+              });
+            }
+            matchExist = Object.keys(result).length;
+
+            if (matchExist === 0) {
+              insertEvent(data, (err, result) => {
+                if (err) {
+                  return res.status(500).json({
+                    success: 0,
+                    error: err,
+                  });
+                }
+
+                return res.json({
+                  message: `Event Added Successfully`,
+                  success: 1,
+                  data: result,
+                });
+              });
+            } else {
+              return res.json({
+                message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+                success: 0,
+                matchExist: matchExist,
+              });
+            }
+          });
+        } else {
+          return res.json({
+            message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+            success: 0,
+            eventExist: eventExist,
+          });
+        }
+      });
+    });
+  },
+
+  EditSession: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    let sessionExist = 0;
+    const data = req.body;
+
+    checkEventExist(data, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          error: err,
+        });
+      }
+      eventExist = Object.keys(result).length;
+
+      if (eventExist === 0) {
+        checkMatchExist(data, (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              success: 0,
+              error: err,
+            });
+          }
+          matchExist = Object.keys(result).length;
+
+          if (matchExist === 0) {
+            checkSessionExist(data, (err, result) => {
+              if (err) {
+                return res.status(500).json({
+                  success: 0,
+                  error: err,
+                });
+              }
+              eventExist = Object.keys(result).length;
+
+              if (eventExist === 0) {
+                editSession(data, (err, result) => {
+                  if (err) {
+                    return res.status(500).json({
+                      success: 0,
+                      error: err,
+                    });
+                  }
+
+                  return res.json({
+                    message: `Session Update Successfully`,
+                    success: 1,
+                    data: result,
+                  });
+                });
+              } else {
+                return res.json({
+                  message: `Already Have "${result[0].title}" Session on "${result[0].date}"`,
+                  success: 0,
+                  data: result,
+                });
+              }
+            });
+          } else {
+            return res.json({
+              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success: 0,
+              matchExist: matchExist,
+            });
+          }
+        });
+      } else {
+        return res.json({
+          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success: 0,
+          eventExist: eventExist,
+        });
+      }
+    });
+  },
 };

@@ -1,5 +1,5 @@
 // const { route } = require("../user/user.router");
-const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession} = require("./manager.controller");
+const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession, GetTeamAchi, AddTeamAchi, AddMembership,PlayerRole, EditEvent, EditSession} = require("./manager.controller");
 
 const router = require("express").Router();
 
@@ -17,6 +17,12 @@ router.get("/getUpcommingSession",GetUpcommingSession);
 router.get("/getOldSession",GetOldSession);
 router.post("/getEvent",SelectEvent);
 router.post("/getSession",SelectSession);
+router.get("/getteamAchi",GetTeamAchi);
+router.post("/addteamAchi",AddTeamAchi);
+router.post("/addMembership",AddMembership);
+router.post("/playerRole",PlayerRole);
+router.post("/editEvent",EditEvent)
+router.post("/editSession",EditSession);
 
 
 module.exports = router;
