@@ -65,6 +65,93 @@ module.exports = {
         )
     },
 
+    GetCouncelling:(body,callBack) =>{
+        pool.query(
+            `SELECT * FROM counseling_session;` ,
+            [body],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+    
+    
+    GetEvents:(body,callBack) =>{
+        pool.query(
+            `SELECT * FROM events;` ,
+            [body],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+    GetEventDetails:(data,callBack) =>{
+        console.log('jjj')
+        pool.query(
+            `SELECT * FROM events WHERE event_id=?` ,
+            [data],
+            
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+    GetPayments:(data,callBack) =>{
+        console.log('jjj')
+        pool.query(
+            `SELECT * FROM payment WHERE user_id=?` ,
+            [data],
+            
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results ); 
+            }
+        )
+    },
+    GetMatchPlayers: (body,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id INNER JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=?`,
+            [body.match_id,body.statuss],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+
+    GetMatchCoach: (body,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches INNER JOIN couch_join_match on matches.match_id=couch_join_match.match_id INNER JOIN user ON user.user_id=couch_join_match.user_id WHERE matches.match_id=? AND matches.marked=?` ,
+            [body,"pending"],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+    
+
     
 
 
