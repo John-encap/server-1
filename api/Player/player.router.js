@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers} = require("./player.controller");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
 const router = require("express").Router();
 
 
@@ -11,6 +11,7 @@ router.post("/eventDetails", GetEventDetails);
 router.post("/payments", GetPayments);
 router.post("/matchCoach", GetMatchCoach);
 router.post("/matchPlayer", GetMatchPlayers);
+router.post("/Ranking", GetRanking);
 
 
 module.exports = router; 

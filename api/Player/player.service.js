@@ -152,6 +152,24 @@ module.exports = {
             }
         )
     },
+
+
+    GetRanking: (catagory,format,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches WHERE marked = ?` ,
+            [1],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                console.log("kkkk")
+                return callBack(null,results); 
+            }
+
+        )
+        
+    },
     
 
     
