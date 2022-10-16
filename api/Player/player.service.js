@@ -24,6 +24,7 @@ module.exports = {
 
     // Get sessions for player 
     GetSessions: (body,callBack) =>{
+        console.log(body.user_id)
         pool.query(
             `SELECT practice_sessions.session_id,practice_sessions.date,practice_sessions.time,practice_sessions.type,player_practice_session.user_id as player_id,practice_sessions.user_id as coach_id,user.name  FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id = player_practice_session.session_id INNER JOIN user ON practice_sessions.user_id=user.user_id WHERE player_practice_session.user_id=? and date like ?` ,
             [body.user_id,body.month+'%'],
@@ -32,6 +33,7 @@ module.exports = {
                 if(error){
                     return callBack(error);
                 }
+                
                 return callBack(null,results); 
             }
         )
@@ -149,6 +151,24 @@ module.exports = {
                 return callBack(null,results); 
             }
         )
+    },
+
+
+    GetRanking: (catagory,format,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches WHERE marked = ?` ,
+            [1],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                console.log("kkkk")
+                return callBack(null,results); 
+            }
+
+        )
+        
     },
     
 
