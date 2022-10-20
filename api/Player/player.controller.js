@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,performanceBowl,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,performanceBowl,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -412,6 +412,35 @@ module.exports = {
         const body = req.body;
         console.log("kk")
         Attendance(body.user_id,body.month, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+
+    feedback: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        feedback(body.user_id,body.session_id, (err,results)=>{
             
             if(err) {
                 console.log(err);
