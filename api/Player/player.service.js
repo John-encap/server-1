@@ -299,6 +299,24 @@ module.exports = {
         )
         
     },
+
+    feedback:(user_id,session_id,callBack) =>{
+        pool.query(
+            `SELECT  player_practice_session.session_id,player_practice_session.user_id,player_practice_session.bowling_variant,player_practice_session.batting_shotes,player_practice_session.attendance,player_practice_session.feedback,user.name AS couch_name FROM player_practice_session INNER JOIN practice_sessions ON player_practice_session.session_id=practice_sessions.session_id INNER JOIN user ON practice_sessions.user_id = user.user_id WHERE player_practice_session.user_id = ? AND player_practice_session.session_id= ?`,
+            [user_id,session_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
     
  
     
