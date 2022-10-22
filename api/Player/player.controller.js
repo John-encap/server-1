@@ -1,70 +1,22 @@
-const {GetSessions} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,performanceBowl,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
-    createUser: (req,res) =>{
-        const body = req.body;
-        // const salt = genSaltSync(10);
-        // body.password = hashSync(body.password, salt);
-        create(body, (err,results)=>{
-            if(err) {
-                console.log(err);
-                return res.status(500).json({
-                    success: 0,
-                    message: "Database connection error",
-                    data: body,
-                    err: err
-                    
-                });
-            }
-            return res.status(200).json({
-                success: 1,
-                data: results,
-            });
-        });
-    },
-
-    selectEmployees: (req,res) =>{
-        getEmployee((err,results)=>{
-            if(err) {
-                console.log(err);
-                return
-            }
-            return res.json({
-                success: 1,
-                data: results,
-            });
-        });
-    },
-
-    selectPlayer: (req,res) =>{
-        getPlayer((err,results)=>{
-            if(err) {
-                console.log(err);
-                return
-            }
-            return res.json({
-                success: 1,
-                data: results,
-            });
-        });
-    },
-
-
     //get session details for payers
     GetSessions: (req,res) =>{
         const body = req.body;
-        console.log(req.body.user_id)
-        console.log("hi")
-        GetSessions(body.user_id, (err,results)=>{
+        console.log(req.body.month)
+        GetSessions(body, (err,results)=>{
+            
             if(err) {
                 console.log(err);
                 return
             }
-            if(!results){
+            if(results[0]==undefined){
+                console.log("jj")
                 return res.json({
                     success: 0,
-                    data: "no sessions",
+                    data: results,
                 });
             }
             else{
@@ -73,6 +25,8 @@ module.exports = {
                         success: 1,
                         data: results
                     }); 
+
+                    
                 }
                 
             }
@@ -80,4 +34,436 @@ module.exports = {
         });
         
     },
+
+   GetSessionPlayers: (req,res) =>{ 
+        const body = req.body;
+        console.log("")
+        // let myArray = {}
+        GetSessionPlayers(body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                
+                if(results){
+                    
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+            
+        });
+        
+    },
+    GetSessionCoach: (req,res) =>{ 
+        const body = req.body;
+        console.log("")
+        GetSessionCoach(body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+
+    GetCouncelling: (req,res) =>{ 
+        const body = req.body;
+        console.log("")
+        GetCouncelling(body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+
+    GetEvents: (req,res) =>{ 
+        const body = req.body;
+        console.log("hi")
+        GetEvents(body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    GetEventDetails:  (req,res) =>{ 
+        const body = req.body;
+        console.log(body.eventId)
+        GetEventDetails(body.eventId, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    console.log(results)
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    GetPayments:(req,res) =>{ 
+        const body = req.body;
+        console.log(body.user_id)
+        GetPayments(body.user_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    console.log(results)
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    GetMatchPlayers: (req,res) =>{ 
+        const body = req.body;
+        console.log("")
+        GetMatchPlayers(body, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    
+    GetMatchCoach: (req,res) =>{ 
+        const body = req.body;
+        console.log("")
+        GetMatchCoach(body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    GetRanking: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        GetRanking(body.catagory,body.format, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    performance: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        performance(body.user_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    performanceFld: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        performanceFld(body.user_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    performanceBowl: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        performanceBowl(body.user_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    intro: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        intro(body.user_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    Attendance: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        Attendance(body.user_id,body.month, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+
+    feedback: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        feedback(body.user_id,body.session_id, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+
 }
