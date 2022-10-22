@@ -49,12 +49,13 @@ module.exports = {
 
   getEmployee: (callBack) => {
     pool.query(
-      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role='coach' OR role='manager'`,
-      [],
+      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role=? OR role=?`,
+      ["manager","coach"],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
+        console.log(results)
         return callBack(null, results);
       }
     );
@@ -74,7 +75,7 @@ module.exports = {
   },
   login: (email, callBack) => {
     pool.query(
-      `SELECT name, gender, nic, contact, email, address,role,password FROM user WHERE email=?`,
+      `SELECT user_id, name, gender, nic, contact, email, address,role,password FROM user WHERE email=?`,
       [email],
 
       (error, results, fields) => {
