@@ -107,7 +107,7 @@ module.exports = {
       }
     );
   },
-  
+
   getPassword: (data, callBack) => {
     pool.query(
       `SELECT password FROM user WHERE nic = ?`,
@@ -134,6 +134,7 @@ module.exports = {
       }
     );
   },
+
   checkEventExist: (data, callBack) => {
     pool.query(
       `SELECT event_name, date FROM events WHERE date = ?`,
@@ -304,6 +305,7 @@ module.exports = {
         }
   );
   },
+
   editSession:(data, callBack) => {
     pool.query(
       
@@ -322,6 +324,33 @@ module.exports = {
           return callBack(error);
         }
         return callBack(null, results);
+      }
+    )
+  },
+
+  addMatchTitle:(data,callBack)=>{
+ 
+    pool.query(
+      `INSERT INTO match_title (title , date) VALUES (?,?)`,
+      [data.title, data.date],
+      (error, results, fields) => {
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null, results)
+      }
+    )
+  },
+
+  getMatchTitle:(callBack) =>{
+
+    pool.query(
+      `SELECT * FROM match_title`,[],
+      (error, results, fields)=>{
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null,results)
       }
     )
   }
