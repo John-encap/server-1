@@ -68,6 +68,7 @@ module.exports = {
 
     // Get sessions for player 
     GetSessions: (user_id,callBack) =>{
+        
         pool.query(
             `SELECT * FROM practice_sessions WHERE user_id=?` ,
             [user_id],
