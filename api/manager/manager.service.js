@@ -107,6 +107,7 @@ module.exports = {
       }
     );
   },
+  
   getPassword: (data, callBack) => {
     pool.query(
       `SELECT password FROM user WHERE nic = ?`,
