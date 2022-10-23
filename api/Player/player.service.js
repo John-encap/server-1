@@ -23,6 +23,9 @@ module.exports = {
 
 
     // Get sessions for player 
+    GetSessions: (user_id,callBack) =>{
+        
+
     GetSessions: (body,callBack) =>{
         console.log(body.user_id)
         pool.query(
