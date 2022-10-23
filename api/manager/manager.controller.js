@@ -24,6 +24,8 @@ const {
   playerRole,
   deleteEvent,
   editSession,
+  addMatchTitle,
+  getMatchTitle,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -45,7 +47,6 @@ module.exports = {
           err: err,
         });
       }
-
       // return res.json({
       // success:1,
       // resData : results,
@@ -357,7 +358,7 @@ module.exports = {
       });
     });
   },
-
+  
   GetUpcommingSession: (req, res) => {
     var CurrentDate = new Date();
     getUpcommingSession(CurrentDate, (err, results) => {
@@ -431,7 +432,6 @@ module.exports = {
       });
     });
   },
-
   GetTeamAchi: (req, res) => {
     getTeamAchi((err, results) => {
       if (err) {
@@ -644,6 +644,41 @@ module.exports = {
           eventExist: eventExist,
         });
       }
+    });
+  },
+
+  AddMatchTitle: (req, res) => {
+    const data = req.body;
+    addMatchTitle(data, (err, results) => {
+      if (err) {
+        // console.log()
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection Error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data: results,
+      });
+    });
+  },
+
+  GetMatchTitle: (req, res) => {
+    getMatchTitle((err, results) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection Error",
+          data: body,
+          err: err,
+        });
+      }
+
+      return res.json({
+        data: results,
+      });
     });
   },
 };

@@ -5,7 +5,7 @@ const pool = require("../../config/database");
 module.exports = {
   create: (data, callBack) => {
     pool.query(
-      `INSERT INTO matches (match_format, ground, date, time, op_team_name ) VALUES (?,?,?,?,?) `,
+      `INSERT INTO matches (match_format, ground, date, time, op_team_name,title ) VALUES (?,?,?,?,?,?) `,
       [
         data.match_format,
         data.ground,
@@ -13,6 +13,7 @@ module.exports = {
         data.date,
         data.time,
         data.op_team_name,
+        data.title,
       ],
       (error, results, fields) => {
         if (error) {
@@ -107,7 +108,7 @@ module.exports = {
       }
     );
   },
-  
+
   getPassword: (data, callBack) => {
     pool.query(
       `SELECT password FROM user WHERE nic = ?`,
@@ -134,6 +135,7 @@ module.exports = {
       }
     );
   },
+
   checkEventExist: (data, callBack) => {
     pool.query(
       `SELECT event_name, date FROM events WHERE date = ?`,
@@ -245,7 +247,7 @@ module.exports = {
   },
   getTeamAchi: (callBack) => {
     pool.query(
-      `SELECT * FROM team_achievment`,
+      `SELECT * FROM achievement`,
       [],
       (error, results, fields) => {
         if (error) {
@@ -304,6 +306,7 @@ module.exports = {
         }
   );
   },
+
   editSession:(data, callBack) => {
     pool.query(
       
@@ -322,6 +325,33 @@ module.exports = {
           return callBack(error);
         }
         return callBack(null, results);
+      }
+    )
+  },
+
+  addMatchTitle:(data,callBack)=>{
+ 
+    pool.query(
+      `INSERT INTO match_title (title , date) VALUES (?,?)`,
+      [data.title, data.date],
+      (error, results, fields) => {
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null, results)
+      }
+    )
+  },
+
+  getMatchTitle:(callBack) =>{
+
+    pool.query(
+      `SELECT * FROM match_title`,[],
+      (error, results, fields)=>{
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null,results)
       }
     )
   }
