@@ -23,7 +23,7 @@ module.exports = {
 
 
     // Get sessions for player 
-    GetSessions: (user_id,callBack) =>{
+    // GetSessions: (user_id,callBack) =>{
         
 
     GetSessions: (body,callBack) =>{
@@ -266,6 +266,7 @@ module.exports = {
         )
         
     },
+    
     Attendance:(user_id,month,callBack) =>{
         console.log(month)
         var presentCount=0;
@@ -321,8 +322,4 @@ module.exports = {
         
     },
     
- 
-    
-
-
 }
