@@ -5,7 +5,7 @@ const pool = require("../../config/database");
 module.exports = {
   create: (data, callBack) => {
     pool.query(
-      `INSERT INTO matches (match_format, ground, date, time, op_team_name ) VALUES (?,?,?,?,?) `,
+      `INSERT INTO matches (match_format, ground, date, time, op_team_name,title ) VALUES (?,?,?,?,?,?) `,
       [
         data.match_format,
         data.ground,
@@ -13,6 +13,7 @@ module.exports = {
         data.date,
         data.time,
         data.op_team_name,
+        data.title,
       ],
       (error, results, fields) => {
         if (error) {
@@ -246,7 +247,7 @@ module.exports = {
   },
   getTeamAchi: (callBack) => {
     pool.query(
-      `SELECT * FROM team_achievment`,
+      `SELECT * FROM achievement`,
       [],
       (error, results, fields) => {
         if (error) {
