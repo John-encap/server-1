@@ -1,11 +1,10 @@
-const {getSessionToday, getSessionAll, getPastMatchesD, getAssignedMatches, getAppoinments} = require("./coach.service");
+const {getSessionToday, getSessionAll, checkDateTimePracticeSession, addDateTime, getPlayers, getCoaches, getAssignedPlayers, getAssignedCoaches, markSessionAttendance, allTeamA, pastAndMark} = require("./coach.service");
 
 
 module.exports = {
 
     GetPSessionToday: (req,res) =>{
         const body = req.body;
-        // console.log(body.id);
         getSessionToday(body.id,(err, results)=>{
             if(err) {
                 console.log(err);
@@ -32,8 +31,7 @@ module.exports = {
 
     GetPSessionAll: (req,res) =>{
         const body = req.body;
-        // console.log('gggggggg')
-        console.log(body.id); 
+        // console.log(body.id); 
         getSessionAll(body.id,(err, results)=>{
             if(err) {
                 console.log(err);
@@ -58,11 +56,66 @@ module.exports = {
         });
     },
 
-    GetAllPastMatches: (req,res) =>{
+    AddDateTime: (req,res) =>{
+        const body = req.body;
 
-        // const body = req.body;
+        checkDateTimePracticeSession(body.date, body.time, (err, result)=>{
+            if(err){
+                console.log(err);
+                return
+            }
 
-        getPastMatchesD((err, results)=>{
+            console.log(result);
+
+            //sessionExist = Object.keys(result).length;
+
+            if(result === 0){
+
+                addDateTime(body.id, body.type, body.date, body.time, (err, result) => {
+
+                    if(err){
+                        console.log(err);
+                        return
+                    }
+
+
+                    if(!result){
+
+                        return res.json({
+                            success: 0,
+                            data: "not added",
+                        });
+
+                    }
+                    else{
+                        return res.json({
+                            success: 1,
+                            data: "Successfully added",
+                        });
+                    }
+
+                });
+
+            }
+            else{
+
+                if(result){
+                    return res.json({
+                        success: 0,
+                        data: "Have another session",
+                    });
+                }
+
+            }
+        }
+
+        );
+    },
+
+    GetPlayers: (req,res) =>{
+        const body = req.body;
+        getPlayers(body.date, body.time,(err, results)=>{
+
             if(err) {
                 console.log(err);
                 return
@@ -70,14 +123,14 @@ module.exports = {
             if(!results){
                 return res.json({
                     success: 0,
-                    data: "no sessions",
+                    data: "no coaches",
                 });
             }
             else{
                 if(results){
                     return res.json({
                         success: 1,
-                        data: results
+                        data: results,
                     }); 
                 }
                 
@@ -86,11 +139,11 @@ module.exports = {
         });
     },
 
-    GetAssignedMatches: (req,res) =>{
 
+    GetCoaches: (req,res) =>{
         const body = req.body;
+        getCoaches(body.date, body.time,(err, results)=>{
 
-        getAssignedMatches(body.id, (err, results)=>{
             if(err) {
                 console.log(err);
                 return
@@ -98,14 +151,14 @@ module.exports = {
             if(!results){
                 return res.json({
                     success: 0,
-                    data: "no sessions",
+                    data: "no coaches",
                 });
             }
             else{
                 if(results){
                     return res.json({
                         success: 1,
-                        data: results
+                        data: results,
                     }); 
                 }
                 
@@ -114,10 +167,9 @@ module.exports = {
         });
     },
 
-    GetAppoinments: (req, res) => {
-
+    GetAssignedPlayers: (req, res) => {
         const body = req.body;
-        getAppoinments(body.id,(err, results)=>{
+        getAssignedPlayers(body.id, (err, results) => {
             if(err) {
                 console.log(err);
                 return
@@ -125,21 +177,177 @@ module.exports = {
             if(!results){
                 return res.json({
                     success: 0,
-                    data: "no sessions",
+                    data: "no players",
                 });
             }
             else{
                 if(results){
                     return res.json({
                         success: 1,
-                        data: results
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+
+    GetAssignedCoaches: (req, res) => {
+        const body = req.body;
+        getAssignedCoaches(body.id, (err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no coaches",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+
+    // UpdateDateonSession: (req, res) =>{
+    //     const body = req.body;
+    //     checkDateTimePracticeSession(body.date, body.time, (err, result)=>{
+    //         if(err){
+    //             console.log(err);
+    //             return
+    //         }
+
+    //         console.log(result);
+
+    //         //sessionExist = Object.keys(result).length;
+
+    //         if(result === 0){
+
+    //             addDateTime(body.id, body.type, body.date, body.time, (err, result) => {
+
+    //                 if(err){
+    //                     console.log(err);
+    //                     return
+    //                 }
+
+
+    //                 if(!result){
+
+    //                     return res.json({
+    //                         success: 0,
+    //                         data: "not added",
+    //                     });
+
+    //                 }
+    //                 else{
+    //                     return res.json({
+    //                         success: 1,
+    //                         data: "Successfully added",
+    //                     });
+    //                 }
+
+    //             });
+
+    //         }
+    //         else{
+
+    //             if(result){
+    //                 return res.json({
+    //                     success: 0,
+    //                     data: "Have another session at that time",
+    //                 });
+    //             }
+
+    //         }
+    //     }
+
+    //     );
+    // },
+
+    MarkSessionAttendance: (req, res) => {
+        const body = req.body;
+        markSessionAttendance(body.sessionId, body.playerId, body.attendance, body.battingShots, body.bowlingVariant, body.feedback, (err, results) => {
+
+            if(err) {
+                console.log(err);
+                return
+            }
+
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "unsuccessfully mark attendance",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
                     }); 
                 }
                 
             }
 
         });
+    },
 
-    }
+    AllTeamA: (req, res) => {//db wens karapn
+        const body = req.body;
+        allTeamA((err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no team achievements",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+
+    PastAndMark: (req, res) => {
+        pastAndMark((err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no Past maches details",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+
 
 }
