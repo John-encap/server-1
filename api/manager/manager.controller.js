@@ -697,7 +697,8 @@ module.exports = {
         });
       }
       eventExist = Object.keys(result).length;
-
+      console.log("event exist : ",eventExist);
+    
       if (eventExist === 0) {
         checkMatchExist(data, (err, result) => {
           if (err) {
@@ -707,7 +708,7 @@ module.exports = {
             });
           }
           matchExist = Object.keys(result).length;
-
+          console.log("match exist : ",matchExist);
           if (matchExist === 0) {
             checkSessionExist(data, (err, result) => {
               if (err) {
@@ -717,9 +718,9 @@ module.exports = {
                 });
               }
               sessionExist = Object.keys(result).length;
-
+              console.log("session exist : ",sessionExist);
               if (sessionExist === 0) {
-                create(data, (err, res) => {
+                create(data, (err, result) => {
                   if (err) {
                     return res.status(500).json({
                       success: 0,
@@ -730,9 +731,9 @@ module.exports = {
                   }
 
                   return res.json({
-                    message: `Practice Session Added Successfully`,
+                    message: null,
                     success: 1,
-                    data: err,
+                    data: result,
                   });
                 });
               } else {

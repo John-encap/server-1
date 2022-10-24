@@ -5,21 +5,22 @@ const pool = require("../../config/database");
 module.exports = {
   create: (data, callBack) => {
     pool.query(
-      `INSERT INTO matches (match_format, ground, date, time, op_team_name,title ) VALUES (?,?,?,?,?,?) `,
+      `INSERT INTO matches (match_format, ground, date, time, op_team_name,title,team_icon ) VALUES (?,?,?,?,?,?,?) `,
       [
         data.match_format,
         data.ground,
-        // data.man_of_the_match,
         data.date,
         data.time,
         data.op_team_name,
         data.title,
+        data.image,
       ],
       (error, results, fields) => {
         if (error) {
+          console.log("server error is : ",error)
           return callBack(error);
         }
-        return callBack(null, results);
+        return callBack(null,results);
       }
     );
   },
