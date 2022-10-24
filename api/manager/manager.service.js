@@ -26,7 +26,7 @@ module.exports = {
   getMatch: (callBack) => {
     pool.query(`SELECT * FROM matches `, [], (error, results, fields) => {
       if (error) {
-        console.log("getMatch error", error);
+        // console.log("getMatch error", error);
         return callBack(error);
       }
       return callBack(null, results);
@@ -353,6 +353,12 @@ module.exports = {
         }
         return callBack(null,results)
       }
+    )
+  },
+
+  addPracticeMatch:(data,callBack) => {
+    pool.query(
+      `INSERT INTO `
     )
   }
 };
