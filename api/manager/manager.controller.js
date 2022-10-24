@@ -134,6 +134,7 @@ module.exports = {
       });
     });
   },
+
   UnpaidPlayer: (req, res) => {
     selectUnpaidPlayer((err, results) => {
       if (err) {
@@ -358,7 +359,7 @@ module.exports = {
       });
     });
   },
-  
+
   GetUpcommingSession: (req, res) => {
     var CurrentDate = new Date();
     getUpcommingSession(CurrentDate, (err, results) => {
@@ -679,6 +680,84 @@ module.exports = {
       return res.json({
         data: results,
       });
+    });
+  },
+
+  AddPracticeMatch: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    let sessionExist = 0;
+    const data = req.body;
+
+    checkEventExist(data, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          error: err,
+        });
+      }
+      eventExist = Object.keys(result).length;
+
+      if (eventExist === 0) {
+        checkMatchExist(data, (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              success: 0,
+              error: err,
+            });
+          }
+          matchExist = Object.keys(result).length;
+
+          if (matchExist === 0) {
+            checkSessionExist(data, (err, result) => {
+              if (err) {
+                return res.status(500).json({
+                  success: 0,
+                  error: err,
+                });
+              }
+              sessionExist = Object.keys(result).length;
+
+              if (sessionExist === 0) {
+                create(data, (err, res) => {
+                  if (err) {
+                    return res.status(500).json({
+                      success: 0,
+                      message: "Database connection error",
+                      data: data,
+                      err: err,
+                    });
+                  }
+
+                  return res.json({
+                    message: `Practice Session Added Successfully`,
+                    success: 1,
+                    data: err,
+                  });
+                });
+              } else {
+                return res.json({
+                  message: `Already Have "${result[0].title}" Session on "${result[0].date}"`,
+                  success: 0,
+                  data: result,
+                });
+              }
+            });
+          } else {
+            return res.json({
+              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success: 0,
+              matchExist: matchExist,
+            });
+          }
+        });
+      } else {
+        return res.json({
+          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success: 0,
+          eventExist: eventExist,
+        });
+      }
     });
   },
 };
