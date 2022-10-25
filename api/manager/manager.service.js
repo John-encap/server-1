@@ -320,8 +320,21 @@ module.exports = {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results);
+        return callBack(null, results); 
       }
     )
-  }
+  },
+  amounts: ( callBack) => {
+    pool.query(
+      `SELECT * FROM admin`,
+      [],
+      (error, results, fields) => {
+        if (error) {
+          console.log("getDate error :", error);
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
 };

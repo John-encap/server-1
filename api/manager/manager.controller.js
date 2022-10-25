@@ -24,6 +24,7 @@ const {
   playerRole,
   deleteEvent,
   editSession,
+  amounts,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -646,4 +647,22 @@ module.exports = {
       }
     });
   },
+  amount: (req, res) => {
+    amounts((err, results) => {
+      if (err) {
+        console.log("error adfsvfs", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+
 };
