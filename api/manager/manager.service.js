@@ -105,6 +105,8 @@ module.exports = {
           console.log("getMatch error", error);
           return callBack(error);
         }
+        console.log("this is unpaid : ",results)
+        
         return callBack(null, results);
       }
     );
@@ -357,9 +359,16 @@ module.exports = {
     )
   },
 
-  addPracticeMatch:(data,callBack) => {
+  deleteMatch:(data,callBack)=>{
     pool.query(
-      `INSERT INTO `
+      `DELETE FROM matches WHERE match_id = ?`,[data.match_id],
+      (error, results, fields)=>{
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null,results)
+      }
     )
-  }
+  },
+
 };

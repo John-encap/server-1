@@ -26,6 +26,7 @@ const {
   editSession,
   addMatchTitle,
   getMatchTitle,
+  deleteMatch,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -118,6 +119,7 @@ module.exports = {
   },
 
   PaidPlayer: (req, res) => {
+    console.log("inside paid")
     selectPaidPlayer((err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
@@ -136,6 +138,8 @@ module.exports = {
   },
 
   UnpaidPlayer: (req, res) => {
+
+    // console.log("inside unpaid")
     selectUnpaidPlayer((err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
@@ -146,6 +150,7 @@ module.exports = {
           err: err,
         });
       }
+      // console.log("unpaid controller", results)
       return res.json({
         // success: 1,
         data: results,
@@ -672,7 +677,7 @@ module.exports = {
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
-          data: body,
+          data: results,
           err: err,
         });
       }
@@ -758,6 +763,25 @@ module.exports = {
           eventExist: eventExist,
         });
       }
+    });
+  },
+
+  DeleteMatch: (req, res) => {
+    const data = req.body;
+    deleteMatch(data, (err, results) => {
+      if (err) {
+        console.log("error delete match controller", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
     });
   },
 };
