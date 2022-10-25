@@ -26,7 +26,9 @@ const {
   AddMatchTitle,
   GetMatchTitle,
   AddPracticeMatch,
+  AddAchivement,
 } = require("./manager.controller");
+const { addAchivement } = require("./manager.service");
 
 
 
@@ -56,6 +58,7 @@ router.post("/editSession",EditSession);
 router.post("/addMatchTitle",AddMatchTitle);
 router.get("/getMatchTitle",GetMatchTitle);
 router.post("/addPracticeMatch",AddPracticeMatch);
-router.post("/deleteMatch",DeleteMatch)
+router.post("/deleteMatch",DeleteMatch);
+router.post("/addAchivement",AddAchivement)
 
 module.exports = router;

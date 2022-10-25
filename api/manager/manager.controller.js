@@ -24,12 +24,11 @@ const {
   playerRole,
   deleteEvent,
   editSession,
-
-  amounts,
   addMatchTitle,
   getMatchTitle,
 
   deleteMatch,
+  addAchivement,
 
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
@@ -791,5 +790,24 @@ module.exports = {
       });
     });
   },
+
+  AddAchivement:(req,res) =>{
+    const data = req.body;
+    addAchivement(data,(err,results)=>{
+      if (err) {
+        console.log("error delete match controller", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  }
 };
 
