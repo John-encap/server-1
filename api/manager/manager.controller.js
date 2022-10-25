@@ -24,9 +24,13 @@ const {
   playerRole,
   deleteEvent,
   editSession,
+
+  amounts,
   addMatchTitle,
   getMatchTitle,
+
   deleteMatch,
+
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -653,6 +657,7 @@ module.exports = {
     });
   },
 
+
   AddMatchTitle: (req, res) => {
     const data = req.body;
     addMatchTitle(data, (err, results) => {
@@ -661,11 +666,13 @@ module.exports = {
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
+
           data: body,
           err: err,
         });
       }
       return res.json({
+
         data: results,
       });
     });
@@ -785,3 +792,4 @@ module.exports = {
     });
   },
 };
+

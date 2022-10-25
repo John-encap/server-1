@@ -1,16 +1,44 @@
 // const { route } = require("../user/user.router");
-const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession, GetTeamAchi, AddTeamAchi, AddMembership,PlayerRole, EditEvent, EditSession, AddMatchTitle, GetMatchTitle, AddPracticeMatch, DeleteMatch} = require("./manager.controller");
+const {
+  AddTournament,
+  SelectMatch,
+  SelectDate,
+  amount,
+  AddSession,
+  PaidPlayer,
+  UnpaidPlayer,
+  CheckPassword,
+  AddEvent,
+  GetUpcommingEvent,
+  GetOldEvent,
+  GetUpcommingSession,
+  GetOldSession,
+  SelectEvent,
+  SelectSession,
+  GetTeamAchi,
+  AddTeamAchi,
+  AddMembership,
+  PlayerRole,
+  EditEvent,
+  EditSession,
+} = require("./manager.controller");
+
+
 
 const router = require("express").Router();
 
 router.post("/AddTournamentMatch", AddTournament);
-router.get("/AddTournamentMatch" , SelectMatch);
-router.get("/AddTournamentMatch/date" , SelectDate);
+router.get("/AddTournamentMatch", SelectMatch);
+router.get("/AddTournamentMatch/date", SelectDate);
 router.post("/AddCouncellingSession", AddSession);
 router.get("/payment/paid", PaidPlayer);
 router.get("/payment/unpaid", UnpaidPlayer);
 router.post("/getPassword", CheckPassword);
 router.post("/addevent", AddEvent);
+
+router.get("/payment/amount", amount);
+
+
 router.get("/getUpcommingEvent",GetUpcommingEvent);
 router.get("/getOldevent",GetOldEvent);
 router.get("/getUpcommingSession",GetUpcommingSession);
