@@ -386,6 +386,17 @@ module.exports = {
     )
 
   },
-
+  addAchivement: (data,callBack)=>{
+    pool.query(
+      `INSERT INTO achievement (title , date , description , image ) VALUES (?,?,?,?)`,
+      [data.title, data.date, data.description , data.image],
+      (error, results , fields) => {
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null, results)
+      }
+    )
+  }
 
 };
