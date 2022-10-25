@@ -321,5 +321,342 @@ module.exports = {
         )
         
     },
+
+    getAllPlayers:(callBack) =>{
+        pool.query(
+            `SELECT user.user_id, user.name , player.player_role FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.role=?`,
+            ["player"],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+
+    CreateTeam:(team,date,players,callBack) =>{
+        var teamID=0;
+        var str="(?,?)"
+        var arr=[]
+        var rand=Math.floor(Math.random() * 1000000);
+        for(let i=0;i<players.length-1;i++){
+            str+=",(?,?)"
+        }
+        console.log(str)
+        pool.query(
+            `INSERT INTO team (name,date,uniq) VALUES (?,?,?)`,
+            [team,date,rand],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                pool.query(
+                    `SELECT team_id FROM team WHERE uniq=?`,
+                    [rand],
+                     
+                    (error,results,fields)=>{
+                        if(error){ 
+                            return callBack(error);
+                        }
+                        teamID=results[0].team_id
+                        for(let i=0;i<2*(players.length);i++){
+                            arr[i]=teamID
+                            i++
+                            console.log(parseInt(i/2, 10))
+                            arr[i]=players[parseInt(i/2, 10)]
+                            
+                        }
+                        console.log(arr)
+                        console.log(rand)
+                        pool.query(
+                            `INSERT INTO team_player (team_id,user_id) VALUES `+str,
+                            arr,
+                             
+                            (error,results,fields)=>{
+                                if(error){ 
+                                    return callBack(error);
+                                }
+                               
+                               
+                
+                            }
+                
+                        )
+        
+                    }
+        
+                )
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+
+    getTeam:(callBack) =>{
+        pool.query(
+            `SELECT * FROM team`,
+            ["player"],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+
+    getTeamDetails:(id,callBack) =>{
+        pool.query(
+            `SELECT user.user_id,user.name as username,team.name,team.date FROM team_player INNER JOIN user ON team_player.user_id=user.user_id INNER JOIN team ON team.team_id=team_player.team_id WHERE team_player.team_id=?`,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    deleteTeam:(id,callBack) =>{
+        pool.query(
+            `DELETE FROM team WHERE team_id=?`,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    addTeamMatches:(callBack) =>{
+        pool.query(
+            `SELECT op_team_name,match_format,date,ground,match_id FROM matches WHERE date > ? AND team_id=?`,
+            ['2022-10-26',0],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    future:(callBack) =>{
+        pool.query(
+            `SELECT team.name,matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id FROM matches INNER JOIN team ON matches.team_id=team.team_id  WHERE matches.date > ? AND matches.team_id>?`,
+            ['2022-10-26',0],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    addTeamMatchesDet:(id,callBack) =>{
+        pool.query(
+            `SELECT matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id,matches.team_id  FROM matches  WHERE matches.match_id=? `,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    // addTeamMatchesDet:(id,callBack) =>{
+    //     pool.query(
+    //         `SELECT matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id,matches.team_id , team.name FROM matches INNER JOIN team ON team.team_id=matches.team_id WHERE matches.match_id=? `,
+    //         [id],
+             
+    //         (error,results,fields)=>{
+    //             if(error){ 
+    //                 return callBack(error);
+    //             }
+    //             console.log(results)
+    //             return callBack(null,results);
+
+    //         }
+
+    //     )
+        
+    // },
+    addTeam:(id,team,callBack) =>{
+        console.log(team)
+        pool.query(
+            `UPDATE matches SET team_id=? WHERE match_id=? `,
+            [team,id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                //''''''''''''''''''''''''''''''''''''''''''
+                // pool.query(
+                //     `SELECT user_id FROM team_player WHERE team_id=? `,
+                //     [team],
+                     
+                //     (error,resultsS,fields)=>{
+                //         if(error){ 
+                //             return callBack(error);
+                //         }
+                //         //playeslage id tika player_play_match ekata danna
+                //         console.log(resultsS)
+                //         for(let i=0;i<2*resultsS.length;i++){
+                //             arr[i]=teamID
+                //             i++
+                //             console.log(parseInt(i/2, 10))
+                //             arr[i]=players[parseInt(i/2, 10)]
+                //         }
+                        
+                //         // return callBack(null,results);
+        
+                //     }
+        
+                // )
+                //''''''''''''''''''''''''''''''''''''''''''
+                // console.log(results)
+                // return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    update:(id,team,callBack) =>{
+        console.log(team)
+        pool.query(
+            `UPDATE matches SET team_id=? WHERE match_id=? `,
+            [team,id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    Unmarked:(callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT matches.match_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked = ? AND matches.date < ? GROUP BY matches.match_id `,
+            [0,'2022-10-26'],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    unmarked_data:(id,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT matches.match_id,matches.match_format as format,matches.date,matches.time,matches.op_team_name,matches.ground FROM matches WHERE matches.match_id = ? `,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    unmarked_players:(id,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT matches.match_id,matches.match_format as format,matches.date,matches.time,matches.op_team_name,matches.ground, team_player.user_id , user.name AS player_name FROM matches RIGHT JOIN team_player ON matches.team_id=team_player.team_id INNER JOIN user ON team_player.user_id=user.user_id  WHERE matches.match_id = ? `,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
     
+
+    updatescore:(player,id,bat_runs,bat_balls,six,four,overs, runs, balls, ht,wkt, NB,maiden, WB, runOut, catches,playedd,notOut,callBack) =>{
+        // // console.log("jknkjnkjnknjkjn")
+        // pool.query(
+        //     `INSERT INTO`,
+        //     [bat_runs,bat_balls,six,four,overs, runs, balls, ht,wkt, NB,maiden, WB, runOut, catches,playedd,notOut,player,id],
+             
+        //     (error,results,fields)=>{
+        //         if(error){ 
+        //             return callBack(error);
+        //         }
+        //         console.log(results)
+        //         return callBack(null,results);
+
+        //     }
+
+        // )
+        
+    },
+    
+
+
+
 }
