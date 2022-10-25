@@ -8,6 +8,7 @@ const {
   select_nic,
   select_player,
   deleteEmployee,
+  updateEmployee,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -23,7 +24,6 @@ module.exports = {
       create(body, (err, results) => {
         if (err) {
           console.log("error :::::: ",err.sqlMessage);
-
           return res.json({
             success: 1,
             data: results,
@@ -139,6 +139,26 @@ module.exports = {
           data:body,
           err:err,
         })
+      }
+
+      return res.status(200).json({
+        result:results,
+      });
+    })
+  },
+
+  UpdateEmployee:(req,res)=>{
+    const data = req.body;
+    updateEmployee(data,(error,results)=>{
+      if(error) {
+        console.log("error :::::: ",error.sqlMessage);
+
+          return res.json({
+            success: 1,
+            data: results,
+            err: error.sqlMessage,
+            // validate : validate
+          });
       }
 
       return res.status(200).json({
