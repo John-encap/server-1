@@ -80,7 +80,7 @@ module.exports = {
   },
   selectPaidPlayer: (callBack) => {
     pool.query(
-      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
+      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ? AND user.status = 1`,
 
       ["player"],
       (error, results, fields) => {

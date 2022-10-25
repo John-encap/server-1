@@ -129,7 +129,7 @@ module.exports = {
 
   select_player: (data, callBack) => {
     pool.query(
-      `SELECT name , role,contact, email, role ,address FROM user WHERE user_id = ? `,
+      `SELECT name , role,contact, email, role ,address, image FROM user WHERE user_id = ? `,
       [data.user_id],
       (error, results, fields) => {
         if (error) {
@@ -154,4 +154,18 @@ module.exports = {
       }
     );
   },
+
+  updateEmployee: (data,callBack) => {
+    pool.query(
+      'UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?',
+      [data.e_mail, data.contact , data.address , data.image , data.user_id],
+      (error, results,fields) => {
+        if(error){
+          console.log("delete employee error :",error);
+          return callBack(error);
+        }
+        return callBack(null,results);
+      }
+    )
+  }
 };
