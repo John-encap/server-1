@@ -24,7 +24,12 @@ const {
   playerRole,
   deleteEvent,
   editSession,
+<<<<<<< HEAD
   amounts,
+=======
+  addMatchTitle,
+  getMatchTitle,
+>>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -46,7 +51,6 @@ module.exports = {
           err: err,
         });
       }
-
       // return res.json({
       // success:1,
       // resData : results,
@@ -134,6 +138,7 @@ module.exports = {
       });
     });
   },
+
   UnpaidPlayer: (req, res) => {
     selectUnpaidPlayer((err, results) => {
       if (err) {
@@ -432,7 +437,6 @@ module.exports = {
       });
     });
   },
-
   GetTeamAchi: (req, res) => {
     getTeamAchi((err, results) => {
       if (err) {
@@ -647,6 +651,7 @@ module.exports = {
       }
     });
   },
+<<<<<<< HEAD
   amount: (req, res) => {
     amounts((err, results) => {
       if (err) {
@@ -654,15 +659,127 @@ module.exports = {
         return res.status(500).json({
           success: 0,
           message: "Database connection error",
+=======
+
+  AddMatchTitle: (req, res) => {
+    const data = req.body;
+    addMatchTitle(data, (err, results) => {
+      if (err) {
+        // console.log()
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection Error",
+>>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
           data: body,
           err: err,
         });
       }
       return res.json({
+<<<<<<< HEAD
         // success: 1,
+=======
+>>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
         data: results,
       });
     });
   },
 
+<<<<<<< HEAD
 };
+=======
+  GetMatchTitle: (req, res) => {
+    getMatchTitle((err, results) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection Error",
+          data: body,
+          err: err,
+        });
+      }
+
+      return res.json({
+        data: results,
+      });
+    });
+  },
+
+  AddPracticeMatch: (req, res) => {
+    let eventExist = 0;
+    let matchExist = 0;
+    let sessionExist = 0;
+    const data = req.body;
+
+    checkEventExist(data, (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          success: 0,
+          error: err,
+        });
+      }
+      eventExist = Object.keys(result).length;
+      console.log("event exist : ",eventExist);
+    
+      if (eventExist === 0) {
+        checkMatchExist(data, (err, result) => {
+          if (err) {
+            return res.status(500).json({
+              success: 0,
+              error: err,
+            });
+          }
+          matchExist = Object.keys(result).length;
+          console.log("match exist : ",matchExist);
+          if (matchExist === 0) {
+            checkSessionExist(data, (err, result) => {
+              if (err) {
+                return res.status(500).json({
+                  success: 0,
+                  error: err,
+                });
+              }
+              sessionExist = Object.keys(result).length;
+              console.log("session exist : ",sessionExist);
+              if (sessionExist === 0) {
+                create(data, (err, result) => {
+                  if (err) {
+                    return res.status(500).json({
+                      success: 0,
+                      message: "Database connection error",
+                      data: data,
+                      err: err,
+                    });
+                  }
+                  return res.json({
+                    message: null,
+                    success: 1,
+                    data: result,
+                  });
+                });
+              } else {
+                return res.json({
+                  message: `Already Have "${result[0].title}" Session on "${result[0].date}"`,
+                  success: 0,
+                  data: result,
+                });
+              }
+            });
+          } else {
+            return res.json({
+              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
+              success: 0,
+              matchExist: matchExist,
+            });
+          }
+        });
+      } else {
+        return res.json({
+          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
+          success: 0,
+          eventExist: eventExist,
+        });
+      }
+    });
+  },
+};
+>>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508

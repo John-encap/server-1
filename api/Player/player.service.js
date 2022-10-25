@@ -23,6 +23,9 @@ module.exports = {
 
 
     // Get sessions for player 
+    // GetSessions: (user_id,callBack) =>{
+        
+
     GetSessions: (body,callBack) =>{
         console.log(body.user_id)
         pool.query(
@@ -263,6 +266,7 @@ module.exports = {
         )
         
     },
+    
     Attendance:(user_id,month,callBack) =>{
         console.log(month)
         var presentCount=0;
@@ -414,7 +418,7 @@ module.exports = {
         )
         
     },
-    
+
     getTeamDetails:(id,callBack) =>{
         pool.query(
             `SELECT user.user_id,user.name as username,team.name,team.date FROM team_player INNER JOIN user ON team_player.user_id=user.user_id INNER JOIN team ON team.team_id=team_player.team_id WHERE team_player.team_id=?`,
@@ -652,6 +656,7 @@ module.exports = {
         
     },
     
+
 
 
 }
