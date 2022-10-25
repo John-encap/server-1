@@ -96,7 +96,7 @@ module.exports = {
     pool.query(
       // `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
       // `SELECT user.user_id, payment.payment_id FROM payment FULL JOIN user ON payment.user_id = user.user_id WHERE user.role = ? `,
-      `SELECT name , user_id, role
+      `SELECT name , user_id, role, image
             FROM user
             WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id)`,
       [],

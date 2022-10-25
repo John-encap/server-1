@@ -19,13 +19,13 @@ module.exports = {
     let day = date.getDate();
     let month = date.getMonth() + 1;
     let year = date.getFullYear();
-  
+
     const currentDate = `${year}-${month}-${day}`;
 
     console.log(currentDate);
     console.log(data.name);
     pool.query(
-      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password,date) VALUES ( ?,?,?,?,?,?,?,?,?)`,
+      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password,date,image) VALUES ( ?,?,?,?,?,?,?,?,?,?)`,
       [
         data.name,
         data.nic,
@@ -36,6 +36,7 @@ module.exports = {
         gender,
         password,
         currentDate,
+        data.image,
       ],
       (error, results, fields) => {
         if (error) {
@@ -46,16 +47,15 @@ module.exports = {
     );
   },
 
-
   getEmployee: (callBack) => {
     pool.query(
-      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role=? OR role=?`,
-      ["manager","coach"],
+      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role <> ? AND status=?`,
+      ["player", "1"],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
-        console.log(results)
+        console.log(results);
         return callBack(null, results);
       }
     );
@@ -63,7 +63,7 @@ module.exports = {
 
   getPlayer: (callBack) => {
     pool.query(
-      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role='player'`,
+      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role='player' AND status = 1`,
       [],
       (error, results, fields) => {
         if (error) {
@@ -137,6 +137,20 @@ module.exports = {
           return callBack(error);
         }
         return callBack(null, results);
+      }
+    );
+  },
+
+  deleteEmployee: (data, callBack) => {
+    pool.query(
+      `UPDATE user SET status='1' WHERE user_id=?`,
+      [data.user_id],
+      (error, results,fields) => {
+        if(error){
+          console.log("delete employee error :",error);
+          return callBack(error);
+        }
+        return callBack(null,results);
       }
     );
   },
