@@ -7,6 +7,7 @@ const {
   select_email,
   select_nic,
   select_player,
+  deleteEmployee,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -125,6 +126,25 @@ module.exports = {
             res_data:results,
           });
     });
+  },
+
+  DeleteEmloyee:(req,res)=>{
+    const data = req.body;
+    deleteEmployee(data,(error,results)=>{
+      if(error) {
+        console.log("delete employee controller :",error);
+        return res.status(500).json({
+          success:0,
+          message:"Database Connection Error",
+          data:body,
+          err:err,
+        })
+      }
+
+      return res.status(200).json({
+        result:results,
+      });
+    })
   }
 };
 
