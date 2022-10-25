@@ -729,7 +729,6 @@ module.exports = {
                       err: err,
                     });
                   }
-
                   return res.json({
                     message: null,
                     success: 1,
