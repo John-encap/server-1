@@ -1,4 +1,5 @@
 // const { route } = require("../user/user.router");
+const router = require("express").Router();
 const {
   AddTournament,
   SelectMatch,
@@ -21,11 +22,15 @@ const {
   PlayerRole,
   EditEvent,
   EditSession,
+  DeleteMatch,
+  AddMatchTitle,
+  GetMatchTitle,
+  AddPracticeMatch,
 } = require("./manager.controller");
 
 
 
-const router = require("express").Router();
+
 
 router.post("/AddTournamentMatch", AddTournament);
 router.get("/AddTournamentMatch", SelectMatch);
@@ -35,9 +40,6 @@ router.get("/payment/paid", PaidPlayer);
 router.get("/payment/unpaid", UnpaidPlayer);
 router.post("/getPassword", CheckPassword);
 router.post("/addevent", AddEvent);
-
-router.get("/payment/amount", amount);
-
 
 router.get("/getUpcommingEvent",GetUpcommingEvent);
 router.get("/getOldevent",GetOldEvent);
