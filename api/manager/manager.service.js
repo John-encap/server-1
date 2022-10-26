@@ -80,7 +80,7 @@ module.exports = {
   },
   selectPaidPlayer: (callBack) => {
     pool.query(
-      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
+      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ? AND user.status = 1`,
 
       ["player"],
       (error, results, fields) => {
@@ -96,7 +96,7 @@ module.exports = {
     pool.query(
       // `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
       // `SELECT user.user_id, payment.payment_id FROM payment FULL JOIN user ON payment.user_id = user.user_id WHERE user.role = ? `,
-      `SELECT name , user_id, role
+      `SELECT name , user_id, role, image
             FROM user
             WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id)`,
       [],
@@ -332,6 +332,23 @@ module.exports = {
     )
   },
 
+
+  amounts: ( callBack) => {
+    pool.query(
+      `SELECT * FROM admin`,
+      [],
+      (error, results, fields) => {
+        if (error) {
+          console.log("getDate error :", error);
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+
+
   addMatchTitle:(data,callBack)=>{
  
     pool.query(
@@ -359,9 +376,30 @@ module.exports = {
     )
   },
 
-  addPracticeMatch:(data,callBack) => {
+  deleteMatch:(data,callBack)=>{
     pool.query(
-      `INSERT INTO `
+      `DELETE FROM matches WHERE match_id = ?`,[data.match_id],
+      (error, results, fields)=>{
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null,results)
+      }
+    )
+
+  },
+  addAchivement: (data,callBack)=>{
+    pool.query(
+      `INSERT INTO achievement (title , date , description , image ) VALUES (?,?,?,?)`,
+      [data.title, data.date, data.description , data.image],
+      (error, results , fields) => {
+        if(error){
+          return callBack(error);
+        }
+        return callBack(null, results)
+      }
     )
   }
+
+
 };

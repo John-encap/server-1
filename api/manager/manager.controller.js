@@ -26,6 +26,13 @@ const {
   editSession,
   addMatchTitle,
   getMatchTitle,
+<<<<<<< HEAD
+=======
+
+  deleteMatch,
+  addAchivement,
+
+>>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -651,6 +658,10 @@ module.exports = {
       }
     });
   },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
 
   AddMatchTitle: (req, res) => {
     const data = req.body;
@@ -660,11 +671,19 @@ module.exports = {
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
           data: body,
           err: err,
         });
       }
       return res.json({
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
         data: results,
       });
     });
@@ -764,4 +783,47 @@ module.exports = {
       }
     });
   },
+<<<<<<< HEAD
 };
+=======
+
+  DeleteMatch: (req, res) => {
+    const data = req.body;
+    deleteMatch(data, (err, results) => {
+      if (err) {
+        console.log("error delete match controller", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    });
+  },
+
+  AddAchivement:(req,res) =>{
+    const data = req.body;
+    addAchivement(data,(err,results)=>{
+      if (err) {
+        console.log("error delete match controller", err);
+        return res.status(500).json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        // success: 1,
+        data: results,
+      });
+    })
+  }
+};
+
+>>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d

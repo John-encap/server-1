@@ -1,7 +1,42 @@
 // const { route } = require("../user/user.router");
-const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession, GetTeamAchi, AddTeamAchi, AddMembership,PlayerRole, EditEvent, EditSession, AddMatchTitle, GetMatchTitle, AddPracticeMatch} = require("./manager.controller");
-
+// <<<<<<< HEAD
+// const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession, GetTeamAchi, AddTeamAchi, AddMembership,PlayerRole, EditEvent, EditSession, AddMatchTitle, GetMatchTitle, AddPracticeMatch} = require("./manager.controller");
+// =======
 const router = require("express").Router();
+const {
+  AddTournament,
+  SelectMatch,
+  SelectDate,
+  amount,
+  AddSession,
+  PaidPlayer,
+  UnpaidPlayer,
+  CheckPassword,
+  AddEvent,
+  GetUpcommingEvent,
+  GetOldEvent,
+  GetUpcommingSession,
+  GetOldSession,
+  SelectEvent,
+  SelectSession,
+  GetTeamAchi,
+  AddTeamAchi,
+  AddMembership,
+  PlayerRole,
+  EditEvent,
+  EditSession,
+  DeleteMatch,
+  AddMatchTitle,
+  GetMatchTitle,
+  AddPracticeMatch,
+  AddAchivement,
+} = require("./manager.controller");
+// const { addAchivement } = require("./manager.service");
+
+
+
+// >>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
+
 
 router.post("/AddTournamentMatch", AddTournament);
 router.get("/AddTournamentMatch" , SelectMatch);
@@ -11,6 +46,7 @@ router.get("/payment/paid", PaidPlayer);
 router.get("/payment/unpaid", UnpaidPlayer);
 router.post("/getPassword", CheckPassword);
 router.post("/addevent", AddEvent);
+
 router.get("/getUpcommingEvent",GetUpcommingEvent);
 router.get("/getOldevent",GetOldEvent);
 router.get("/getUpcommingSession",GetUpcommingSession);
@@ -26,5 +62,8 @@ router.post("/editSession",EditSession);
 router.post("/addMatchTitle",AddMatchTitle);
 router.get("/getMatchTitle",GetMatchTitle);
 router.post("/addPracticeMatch",AddPracticeMatch);
+router.post("/deleteMatch",DeleteMatch);
+router.post("/addAchivement",AddAchivement)
+
 
 module.exports = router;

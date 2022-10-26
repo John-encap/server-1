@@ -7,6 +7,8 @@ const {
   select_email,
   select_nic,
   select_player,
+  deleteEmployee,
+  updateEmployee,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -22,7 +24,6 @@ module.exports = {
       create(body, (err, results) => {
         if (err) {
           console.log("error :::::: ",err.sqlMessage);
-
           return res.json({
             success: 1,
             data: results,
@@ -125,6 +126,45 @@ module.exports = {
             res_data:results,
           });
     });
+  },
+
+  DeleteEmloyee:(req,res)=>{
+    const data = req.body;
+    deleteEmployee(data,(error,results)=>{
+      if(error) {
+        console.log("delete employee controller :",error);
+        return res.status(500).json({
+          success:0,
+          message:"Database Connection Error",
+          data:body,
+          err:err,
+        })
+      }
+
+      return res.status(200).json({
+        result:results,
+      });
+    })
+  },
+
+  UpdateEmployee:(req,res)=>{
+    const data = req.body;
+    updateEmployee(data,(error,results)=>{
+      if(error) {
+        console.log("error :::::: ",error.sqlMessage);
+
+          return res.json({
+            success: 1,
+            data: results,
+            err: error.sqlMessage,
+            // validate : validate
+          });
+      }
+
+      return res.status(200).json({
+        result:results,
+      });
+    })
   }
 };
 
