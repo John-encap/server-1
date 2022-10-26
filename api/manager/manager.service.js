@@ -105,6 +105,8 @@ module.exports = {
           console.log("getMatch error", error);
           return callBack(error);
         }
+        console.log("this is unpaid : ",results)
+        
         return callBack(null, results);
       }
     );
@@ -325,25 +327,10 @@ module.exports = {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results); 
+        return callBack(null, results);
       }
     )
   },
-<<<<<<< HEAD
-  amounts: ( callBack) => {
-    pool.query(
-      `SELECT * FROM admin`,
-      [],
-      (error, results, fields) => {
-        if (error) {
-          console.log("getDate error :", error);
-          return callBack(error);
-        }
-        return callBack(null, results);
-      }
-    );
-  },
-=======
 
   addMatchTitle:(data,callBack)=>{
  
@@ -377,5 +364,4 @@ module.exports = {
       `INSERT INTO `
     )
   }
->>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
 };

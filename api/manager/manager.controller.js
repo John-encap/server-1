@@ -24,12 +24,8 @@ const {
   playerRole,
   deleteEvent,
   editSession,
-<<<<<<< HEAD
-  amounts,
-=======
   addMatchTitle,
   getMatchTitle,
->>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -122,6 +118,7 @@ module.exports = {
   },
 
   PaidPlayer: (req, res) => {
+    console.log("inside paid")
     selectPaidPlayer((err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
@@ -140,6 +137,8 @@ module.exports = {
   },
 
   UnpaidPlayer: (req, res) => {
+
+    // console.log("inside unpaid")
     selectUnpaidPlayer((err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
@@ -150,6 +149,7 @@ module.exports = {
           err: err,
         });
       }
+      // console.log("unpaid controller", results)
       return res.json({
         // success: 1,
         data: results,
@@ -651,15 +651,6 @@ module.exports = {
       }
     });
   },
-<<<<<<< HEAD
-  amount: (req, res) => {
-    amounts((err, results) => {
-      if (err) {
-        console.log("error adfsvfs", err);
-        return res.status(500).json({
-          success: 0,
-          message: "Database connection error",
-=======
 
   AddMatchTitle: (req, res) => {
     const data = req.body;
@@ -669,31 +660,23 @@ module.exports = {
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
->>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
           data: body,
           err: err,
         });
       }
       return res.json({
-<<<<<<< HEAD
-        // success: 1,
-=======
->>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
         data: results,
       });
     });
   },
 
-<<<<<<< HEAD
-};
-=======
   GetMatchTitle: (req, res) => {
     getMatchTitle((err, results) => {
       if (err) {
         return res.status(500).json({
           success: 0,
           message: "Database connection Error",
-          data: body,
+          data: results,
           err: err,
         });
       }
@@ -782,4 +765,3 @@ module.exports = {
     });
   },
 };
->>>>>>> 48caa793a79b2284a823d5e5704170bd263c8508
