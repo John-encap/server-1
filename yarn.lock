@@ -9,6 +9,12 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+
+"@fortawesome/fontawesome-free@^6.2.0":
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-6.2.0.tgz#ba3510825b332816fe7190f28827f8cb33a298b5"
+  integrity sha512-CNR7qRIfCwWHNN7FnKUniva94edPdyQzil/zCwk3v6k4R6rR2Fr8i4s3PM7n/lyfPA6Zfko9z5WDzFxG9SW1uQ==
+
 "@firebase/analytics-compat@0.1.16":
   version "0.1.16"
   resolved "https://registry.yarnpkg.com/@firebase/analytics-compat/-/analytics-compat-0.1.16.tgz#7a2c57c37a39efe52c476fa8878dd5a6b93b2155"
@@ -412,6 +418,7 @@
     long "^4.0.0"
     protobufjs "^7.0.0"
     yargs "^16.2.0"
+
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.9"

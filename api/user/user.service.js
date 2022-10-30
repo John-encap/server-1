@@ -4,7 +4,6 @@ const lankaNIC = require("lanka-nic");
 
 module.exports = {
   create: (data, callBack) => {
-    let { gender } = lankaNIC.getInfoFromNIC(data.nic);
     const salt = genSaltSync(10);
     const password = hashSync(data.nic, salt);
     if (
@@ -25,16 +24,17 @@ module.exports = {
     console.log(currentDate);
     console.log(data.name);
     pool.query(
-      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password,date,image) VALUES ( ?,?,?,?,?,?,?,?,?,?)`,
+      `INSERT INTO user ( name,nic,contact,email,address,role,gender,password,dob,date,image) VALUES ( ?,?,?,?,?,?,?,?,?,?,?)`,
       [
         data.name,
         data.nic,
         data.contact,
-        data.e_mail,
+        data.email,
         data.address,
-        data.role,
-        gender,
+        data.user_role,
+        data.gender,
         password,
+        data.dob,
         currentDate,
         data.image,
       ],

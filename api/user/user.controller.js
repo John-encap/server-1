@@ -137,7 +137,7 @@ module.exports = {
           success:0,
           message:"Database Connection Error",
           data:body,
-          err:err,
+          err:error,
         })
       }
 
