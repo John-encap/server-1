@@ -327,10 +327,11 @@ module.exports = {
         if (error) {
           return callBack(error);
         }
-        return callBack(null, results); 
+        return callBack(null, results);
       }
     )
   },
+
 
   amounts: ( callBack) => {
     pool.query(
@@ -345,6 +346,7 @@ module.exports = {
       }
     );
   },
+
 
 
   addMatchTitle:(data,callBack)=>{
@@ -398,5 +400,6 @@ module.exports = {
       }
     )
   }
+
 
 };

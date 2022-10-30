@@ -27,6 +27,7 @@ const {
   addMatchTitle,
   getMatchTitle,
 
+
   deleteMatch,
   addAchivement,
 
@@ -656,7 +657,6 @@ module.exports = {
     });
   },
 
-
   AddMatchTitle: (req, res) => {
     const data = req.body;
     addMatchTitle(data, (err, results) => {
@@ -810,4 +810,5 @@ module.exports = {
     })
   }
 };
+
 

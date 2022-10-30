@@ -1,4 +1,7 @@
 // const { route } = require("../user/user.router");
+// <<<<<<< HEAD
+// const { AddTournament, SelectMatch, SelectDate,  AddSession ,PaidPlayer, UnpaidPlayer, CheckPassword, AddEvent,GetUpcommingEvent,GetOldEvent, GetUpcommingSession, GetOldSession, SelectEvent, SelectSession, GetTeamAchi, AddTeamAchi, AddMembership,PlayerRole, EditEvent, EditSession, AddMatchTitle, GetMatchTitle, AddPracticeMatch} = require("./manager.controller");
+// =======
 const router = require("express").Router();
 const {
   AddTournament,
@@ -28,15 +31,16 @@ const {
   AddPracticeMatch,
   AddAchivement,
 } = require("./manager.controller");
-const { addAchivement } = require("./manager.service");
+// const { addAchivement } = require("./manager.service");
 
 
 
+// >>>>>>> 4689e5994867c35a2c438d4affc678ae79ac0a7d
 
 
 router.post("/AddTournamentMatch", AddTournament);
-router.get("/AddTournamentMatch", SelectMatch);
-router.get("/AddTournamentMatch/date", SelectDate);
+router.get("/AddTournamentMatch" , SelectMatch);
+router.get("/AddTournamentMatch/date" , SelectDate);
 router.post("/AddCouncellingSession", AddSession);
 router.get("/payment/paid", PaidPlayer);
 router.get("/payment/unpaid", UnpaidPlayer);
@@ -60,5 +64,6 @@ router.get("/getMatchTitle",GetMatchTitle);
 router.post("/addPracticeMatch",AddPracticeMatch);
 router.post("/deleteMatch",DeleteMatch);
 router.post("/addAchivement",AddAchivement)
+
 
 module.exports = router;

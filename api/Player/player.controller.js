@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,CreateTeam,future,update,unmarked_data,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -7,6 +7,37 @@ module.exports = {
         const body = req.body;
         console.log(req.body.month)
         GetSessions(body, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                console.log("jj")
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results
+                    }); 
+
+                    
+                }
+                
+            }
+            
+        });
+        
+    },
+    GetSessionss: (req,res) =>{
+        const body = req.body;
+        console.log(req.body.month)
+        GetSessionss(body, (err,results)=>{
             
             if(err) {
                 console.log(err);
@@ -211,9 +242,37 @@ module.exports = {
         });
         
     },
+    GetMatchPlayerss: (req,res) =>{ 
+        const body = req.body;
+        console.log("kk")
+        GetMatchPlayerss(body, (err,results)=>{ 
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
     GetMatchPlayers: (req,res) =>{ 
         const body = req.body;
-        console.log("")
+        console.log(body)
         GetMatchPlayers(body, (err,results)=>{
             
             if(err) {
@@ -812,6 +871,32 @@ module.exports = {
     updatescore: (req,res) =>{ 
         console.log(req.body)
         updatescore(req.body.user_id,req.body.match_id,req.body.bat_runs,req.body.bat_balls,req.body.six,req.body.four,req.body.overs, req.body.runs, req.body.balls, req.body.ht,req.body.wkt, req.body.NB,req.body.maiden, req.body.WB, req.body.runOut, req.body.catches,req.body.playedd,req.body.notOut,(err,results)=>{
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    marked: (req,res) =>{ 
+        marked((err,results)=>{
+            
             if(err) {
                 console.log(err);
                 return

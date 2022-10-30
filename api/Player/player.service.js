@@ -42,6 +42,22 @@ module.exports = {
         )
         
     },
+    GetSessionss: (body,callBack) =>{
+        console.log(body.user_id)
+        pool.query(
+            `SELECT *  FROM practice_sessions  WHERE  date like ?` ,
+            [body.month+'%'],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results); 
+            }
+        )
+        
+    },
     GetSessionPlayers: (body,callBack) =>{
         pool.query(
             `SELECT user.name, user.user_id AS player_ids,practice_sessions.type,practice_sessions.time,practice_sessions.date FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id=player_practice_session.session_id INNER JOIN user ON player_practice_session.user_id=user.user_id WHERE practice_sessions.session_id=?;` ,
@@ -129,14 +145,31 @@ module.exports = {
         )
     },
     GetMatchPlayers: (body,callBack) =>{
+        console.log("kk")
         pool.query(
-            `SELECT * FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id INNER JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=?`,
+            `SELECT * ,SUM(runs) as full FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id INNER JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=?`,
+            [body.match_id,1],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results); 
+            }
+        )
+    },
+    GetMatchPlayerss: (body,callBack) =>{
+        console.log(body.statuss)
+        pool.query(
+            `SELECT * ,SUM(runs) as full FROM matches RIGHT JOIN player_play_matches on matches.match_id=player_play_matches.match_id LEFT JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=?`,
             [body.match_id,body.statuss],
              
             (error,results,fields)=>{
                 if(error){
                     return callBack(error);
                 }
+                console.log(results) 
                 return callBack(null,results); 
             }
         )
@@ -145,7 +178,7 @@ module.exports = {
     GetMatchCoach: (body,callBack) =>{
         pool.query(
             `SELECT * FROM matches INNER JOIN couch_join_match on matches.match_id=couch_join_match.match_id INNER JOIN user ON user.user_id=couch_join_match.user_id WHERE matches.match_id=? AND matches.marked=?` ,
-            [body,"pending"],
+            [body,0],
              
             (error,results,fields)=>{
                 if(error){
@@ -653,6 +686,24 @@ module.exports = {
         //     }
 
         // )
+        
+    },
+    marked:(callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT matches.match_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked > ? AND matches.date < ? GROUP BY matches.match_id `,
+            [0,'2022-10-26'],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
         
     },
     
