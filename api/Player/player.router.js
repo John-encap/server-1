@@ -1,7 +1,7 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,GetSessionss,GetMatchPlayerss,update,Unmarked,updatescore,unmarked_players,marked,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,GetSessionss,match,GetMatchPlayerss,update,Unmarked,updatescore,unmarked_players,marked,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
 const router = require("express").Router();
 
-
+router.post("/match", match);
 router.post("/session", GetSessions);
 router.post("/sessions", GetSessionss);
 router.post("/sessionDetails", GetSessionPlayers);
