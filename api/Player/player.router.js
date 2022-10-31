@@ -1,8 +1,9 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,update,Unmarked,updatescore,unmarked_players,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,GetSessionss,match,GetMatchPlayerss,update,Unmarked,updatescore,unmarked_players,marked,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
 const router = require("express").Router();
 
-
+router.post("/match", match);
 router.post("/session", GetSessions);
+router.post("/sessions", GetSessionss);
 router.post("/sessionDetails", GetSessionPlayers);
 router.post("/sessionCoaches", GetSessionCoach);
 router.post("/counceling", GetCouncelling);
@@ -11,6 +12,7 @@ router.post("/eventDetails", GetEventDetails);
 router.post("/payments", GetPayments);
 router.post("/matchCoach", GetMatchCoach);
 router.post("/matchPlayer", GetMatchPlayers);
+router.post("/matchPlayers", GetMatchPlayerss);
 router.post("/Ranking", GetRanking);
 router.post("/performance", performance);
 router.post("/performanceBowl", performanceBowl);
@@ -32,4 +34,5 @@ router.post("/coach/Unmarked", Unmarked);
 router.post("/coach/unmarked_data", unmarked_data);
 router.post("/coach/unmarked_players", unmarked_players);
 router.post("/coach/updatescore", updatescore);
+router.post("/coach/marked", marked);
 module.exports = router; 
