@@ -274,8 +274,8 @@ module.exports = {
   },
   addMembership: (data, callBack) => {
     pool.query(
-      `INSERT INTO payment (date,total_amount,user_id) VALUES (?,?,?)`,
-      [data.date, data.total_amount, data.user_id],
+      `INSERT INTO payment (date,total_amount,user_id,time,year) VALUES (?,?,?,?,?)`,
+      [data.date, data.total_amount, data.user_id, data.time, data.year],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
@@ -284,7 +284,7 @@ module.exports = {
       }
     );
   },
-
+  
   playerRole:(data, callBack)=>{
     pool.query(
         `SELECT * FROM player WHERE user_id = ?`,
