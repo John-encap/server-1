@@ -496,7 +496,6 @@ module.exports = {
       });
     });
   },
-
   PlayerRole: (req, res) => {
     const data = req.body;
     playerRole(data, (err, results) => {

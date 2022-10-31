@@ -9,6 +9,8 @@ const {
   select_player,
   deleteEmployee,
   updateEmployee,
+  getLastRow,
+  playerDetail,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -20,26 +22,24 @@ let length_nic = 0;
 module.exports = {
   createUser: (req, res) => {
     const body = req.body;
-   
-      create(body, (err, results) => {
-        if (err) {
-          console.log("error :::::: ",err.sqlMessage);
-          return res.json({
-            success: 1,
-            data: results,
-            err: err.sqlMessage,
-            // validate : validate
-          });
-        }
-        return res.status(200).json({
+
+    create(body, (err, results) => {
+      if (err) {
+        console.log("error :::::: ", err.sqlMessage);
+        return res.json({
           success: 1,
           data: results,
-          err: null,
+          err: err.sqlMessage,
           // validate : validate
         });
-
+      }
+      return res.status(200).json({
+        success: 1,
+        data: results,
+        err: null,
+        // validate : validate
       });
-    
+    });
   },
 
   selectEmployees: (req, res) => {
@@ -68,7 +68,6 @@ module.exports = {
     });
   },
 
-  
   loginn: (req, res) => {
     const body = req.body;
     // const salt = genSaltSync(10);
@@ -100,73 +99,111 @@ module.exports = {
           });
         }
       }
-
-
-    },
-
-    
-    );
-
-  },
-
-  showPlayer:(req, res) => {
-    const data = req.body;
-    select_player(data, (err, results)=>{
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-              success: 0,
-              message: "Database connection error",
-              data: body,
-              err: err,
-            });
-          }
-
-          return res.status(200).json({
-            res_data:results,
-          });
     });
   },
 
-  DeleteEmloyee:(req,res)=>{
+  showPlayer: (req, res) => {
     const data = req.body;
-    deleteEmployee(data,(error,results)=>{
-      if(error) {
-        console.log("delete employee controller :",error);
+    select_player(data, (err, results) => {
+      if (err) {
+        console.log(err);
         return res.status(500).json({
-          success:0,
-          message:"Database Connection Error",
-          data:body,
-          err:error,
-        })
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
       }
 
       return res.status(200).json({
-        result:results,
+        res_data: results,
       });
-    })
+    });
   },
 
-  UpdateEmployee:(req,res)=>{
+  DeleteEmloyee: (req, res) => {
     const data = req.body;
-    updateEmployee(data,(error,results)=>{
-      if(error) {
-        console.log("error :::::: ",error.sqlMessage);
-
-          return res.json({
-            success: 1,
-            data: results,
-            err: error.sqlMessage,
-            // validate : validate
-          });
+    deleteEmployee(data, (error, results) => {
+      if (error) {
+        console.log("delete employee controller :", error);
+        return res.status(500).json({
+          success: 0,
+          message: "Database Connection Error",
+          data: body,
+          err: error,
+        });
       }
 
       return res.status(200).json({
-        result:results,
+        result: results,
       });
-    })
-  }
-};
+    });
+  },
 
+  UpdateEmployee: (req, res) => {
+    const data = req.body;
+    updateEmployee(data, (error, results) => {
+      if (error) {
+        console.log("error :::::: ", error.sqlMessage);
+
+        return res.json({
+          success: 0,
+          data: results,
+          err: error.sqlMessage,
+          // validate : validate
+        });
+      }
+
+      return res.status(200).json({
+        result: results,
+      });
+    });
+  },
+  PlayerRegistration: (req, res) => {
+    const data = req.body;
+    create(data, (error, results) => {
+      if (error) {
+        console.log("sql error : ", error.sqlMessage);
+
+        return res.status(500).json({
+          success: 0,
+          data: results,
+          err: error.sqlMessage,
+        });
+      }
+      getLastRow(data, (err0r, results) => {
+        if (error) {
+          console.log("sql error : ", error.sqlMessage);
+
+          return res.status(500).json({
+            success: 0,
+            data: results,
+            err: error.sqlMessage,
+          });
+        }
+        console.log(results[0].user_id);
+        data.user_id = results[0].user_id;
+        console.log(data)
+        playerDetail(data,(error,results)=>{
+          if (error) {
+            console.log("sql error : ", error.sqlMessage);
+  
+            return res.status(500).json({
+              success: 0,
+              data: results,
+              err: error.sqlMessage,
+            });
+          }
+          console.log(results)
+
+          return res.status(200).json({
+            result: results,
+          });
+        })
+        
+      });
+    });
+  },
+};
 
 // fixed error and get right error message
