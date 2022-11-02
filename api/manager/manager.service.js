@@ -17,10 +17,10 @@ module.exports = {
       ],
       (error, results, fields) => {
         if (error) {
-          console.log("server error is : ",error)
+          console.log("server error is : ", error);
           return callBack(error);
         }
-        return callBack(null,results);
+        return callBack(null, results);
       }
     );
   },
@@ -105,8 +105,8 @@ module.exports = {
           console.log("getMatch error", error);
           return callBack(error);
         }
-        console.log("this is unpaid : ",results)
-        
+        console.log("this is unpaid : ", results);
+
         return callBack(null, results);
       }
     );
@@ -249,16 +249,12 @@ module.exports = {
     );
   },
   getTeamAchi: (callBack) => {
-    pool.query(
-      `SELECT * FROM achievement`,
-      [],
-      (error, results, fields) => {
-        if (error) {
-          return callBack(error);
-        }
-        return callBack(null, results);
+    pool.query(`SELECT * FROM achievement`, [], (error, results, fields) => {
+      if (error) {
+        return callBack(error);
       }
-    );
+      return callBack(null, results);
+    });
   },
   addTeamAchi: (data, callBack) => {
     pool.query(
@@ -284,35 +280,34 @@ module.exports = {
       }
     );
   },
-  
-  playerRole:(data, callBack)=>{
+
+  playerRole: (data, callBack) => {
     pool.query(
-        `SELECT * FROM player WHERE user_id = ?`,
-        [data.user_id],
-        (error, results, fields) => {
-            if (error) {
-              return callBack(error);
-            }
-            return callBack(null, results);
-          }
+      `SELECT * FROM player WHERE user_id = ?`,
+      [data.user_id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
     );
   },
-  deleteEvent:(data, callBack)=>{
+  deleteEvent: (data, callBack) => {
     pool.query(
       `DELETE FROM EVENTS WHERE EVENT_ID = ?`,
       [data.event_id],
       (error, results, fields) => {
-          if (error) {
-            return callBack(error);
-          }
-          return callBack(null, results);
+        if (error) {
+          return callBack(error);
         }
-  );
+        return callBack(null, results);
+      }
+    );
   },
 
-  editSession:(data, callBack) => {
+  editSession: (data, callBack) => {
     pool.query(
-      
       `UPDATE counseling_session SET title = $1 , date= $2, time = $3, mentor = $4, mentor_details = $5, place = $6 WHERE c_session_id = $7`,
       [
         data.title,
@@ -321,7 +316,7 @@ module.exports = {
         data.mentor,
         data.mentor_datails,
         data.place,
-        data.session_id
+        data.session_id,
       ],
       (error, results, fields) => {
         if (error) {
@@ -329,17 +324,25 @@ module.exports = {
         }
         return callBack(null, results);
       }
-    )
+    );
   },
 
+  amounts: (callBack) => {
+    pool.query(`SELECT * FROM admin`, [], (error, results, fields) => {
+      if (error) {
+        console.log("getDate error :", error);
+        return callBack(error);
+      }
+      return callBack(null, results);
+    });
+  },
 
-  amounts: ( callBack) => {
+  addMatchTitle: (data, callBack) => {
     pool.query(
-      `SELECT * FROM admin`,
-      [],
+      `INSERT INTO match_title (title , date) VALUES (?,?)`,
+      [data.title, data.date],
       (error, results, fields) => {
         if (error) {
-          console.log("getDate error :", error);
           return callBack(error);
         }
         return callBack(null, results);
@@ -347,59 +350,102 @@ module.exports = {
     );
   },
 
+  getMatchTitle: (callBack) => {
+    pool.query(`SELECT * FROM match_title`, [], (error, results, fields) => {
+      if (error) {
+        return callBack(error);
+      }
+      return callBack(null, results);
+    });
+  },
 
-
-  addMatchTitle:(data,callBack)=>{
- 
+  deleteMatch: (data, callBack) => {
     pool.query(
-      `INSERT INTO match_title (title , date) VALUES (?,?)`,
-      [data.title, data.date],
+      `DELETE FROM matches WHERE match_id = ?`,
+      [data.match_id],
       (error, results, fields) => {
-        if(error){
+        if (error) {
           return callBack(error);
         }
-        return callBack(null, results)
+        return callBack(null, results);
       }
-    )
+    );
   },
-
-  getMatchTitle:(callBack) =>{
-
-    pool.query(
-      `SELECT * FROM match_title`,[],
-      (error, results, fields)=>{
-        if(error){
-          return callBack(error);
-        }
-        return callBack(null,results)
-      }
-    )
-  },
-
-  deleteMatch:(data,callBack)=>{
-    pool.query(
-      `DELETE FROM matches WHERE match_id = ?`,[data.match_id],
-      (error, results, fields)=>{
-        if(error){
-          return callBack(error);
-        }
-        return callBack(null,results)
-      }
-    )
-
-  },
-  addAchivement: (data,callBack)=>{
+  addAchivement: (data, callBack) => {
     pool.query(
       `INSERT INTO achievement (title , date , description , image ) VALUES (?,?,?,?)`,
-      [data.title, data.date, data.description , data.image],
-      (error, results , fields) => {
-        if(error){
+      [data.title, data.date, data.description, data.image],
+      (error, results, fields) => {
+        if (error) {
           return callBack(error);
         }
-        return callBack(null, results)
+        return callBack(null, results);
       }
-    )
+    );
+  },
+
+  addYearMembership: (data, callBack) => {
+    pool.query(
+      `INSERT INTO membership_fee (year , amount) VALUES (?,?)`,
+      [data.year, data.amount],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+  editMembership: (data, callBack) => {
+    pool.query(
+      `UPDATE membership_fee SET amount = ? WHERE year = ? `,
+      [
+        data.amount, 
+        data.year
+      ],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+  getMembership: (callBack) => {
+    pool.query(`SELECT * FROM membership_fee`, [], (error, results, fields) => {
+      if (error) {
+        return callBack(error);
+      }
+      return callBack(null, results);
+    });
+  },
+  getLastRow: (callBack) => {
+    pool.query(
+      `SELECT * FROM membership_fee ORDER BY year DESC LIMIT 1`,
+      [],
+      (error, results, fiellds) => {
+        if (error) {
+          console.log("get last row error : ", error);
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+  findPaid: (data, callBack)=>{
+    pool.query(
+      `SELECT * FROM payment WHERE year = ?`,
+      [
+        data.year
+      ],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
   }
-
-
 };

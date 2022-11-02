@@ -30,6 +30,11 @@ const {
   GetMatchTitle,
   AddPracticeMatch,
   AddAchivement,
+  GetMembership,
+  EditMembership,
+  AddYearMembership,
+  GetLastRow,
+  FindPaid,
 } = require("./manager.controller");
 // const { addAchivement } = require("./manager.service");
 
@@ -63,7 +68,12 @@ router.post("/addMatchTitle",AddMatchTitle);
 router.get("/getMatchTitle",GetMatchTitle);
 router.post("/addPracticeMatch",AddPracticeMatch);
 router.post("/deleteMatch",DeleteMatch);
-router.post("/addAchivement",AddAchivement)
-
+router.post("/addAchivement",AddAchivement);
+router.get("/getMembership",GetMembership);
+router.post("/editMembership",EditMembership);
+router.post("/addYearMembership",AddYearMembership);
+router.get("/getLastRow",GetLastRow);
+router.post("/findPaid",FindPaid);
 
 module.exports = router;
+
