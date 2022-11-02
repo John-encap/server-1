@@ -49,8 +49,8 @@ module.exports = {
 
   getEmployee: (callBack) => {
     pool.query(
-      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role <> ? AND status=?`,
-      ["player", "1"],
+      `SELECT user_id, name, gender, nic, contact, email, address,role FROM user WHERE role <> ? AND  role != 'admin'`,
+      ["player"],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
@@ -142,30 +142,103 @@ module.exports = {
   },
 
   deleteEmployee: (data, callBack) => {
+    console.log(data);
+    if (data.user_role == "manager") {
+      pool.query(
+        `SELECT COUNT(user_id) as managerCount FROM manager`,
+        [data.user_id],
+        (error, results1, fields) => {
+          if (error) {
+            console.log("delete employee error :", error);
+            return callBack(error);
+          } else {
+        
+            if (results1[0].managerCount == 1) {
+              return callBack(null, {
+                status: "Delete Fails!",
+                message: "Managaer deletion was unable to complete. Because there should be at least one manager",
+
+              });
+            } else {
+              pool.query(
+                ` DELETE FROM user WHERE user_id = ? `,
+                [data.user_id],
+                (error, results, fields) => {
+                  if (error) {
+                    console.log("delete employee error :", error);
+                    return callBack(error);
+                  }
+                  return callBack(null, {
+                    status: "Successfuly Deleted!",
+                    message: "Manager Successfuly Deleted!"
+                  });
+                }
+              );
+            }
+          }
+        }
+      );
+    } else if (data.user_role == "coach") {
+      pool.query(
+        `SELECT * FROM coach_join_practice_session  WHERE user_id = ? `,
+        [data.user_id],
+        (error, results2, fields) => {
+          if (error) {
+            console.log("delete employee error :", error);
+            return callBack(error);
+          } else {
+            pool.query(
+              `SELECT * FROM couch_join_match  WHERE user_id = ? `,
+              [data.user_id],
+              (error, results1, fields) => {
+                if (error) {
+                  console.log("delete employee error :", error);
+                  return callBack(error);
+                } else {
+                  if (results1.length > 0) {
+                    return callBack(null, {
+                      status: "Delete Fails!",
+                      message: "Coach deletion was unable to complete. Because this coach is assigned to upcommeing practice session and matches",
+                      resultsForMatch: results2,
+                      resultsFOrSessions: results1,
+                    });
+                  } else {
+                    pool.query(
+                      ` DELETE FROM user WHERE user_id = ? `,
+                      [data.user_id],
+                      (error, results, fields) => {
+                        if (error) {
+                          console.log("delete employee error :", error);
+                          return callBack(error);
+                        }
+                        return callBack(null, {
+                          status: "Successfuly Deleted!",
+                          message: "Coach Successfuly Deleted!"
+                        });
+                      }
+                    );
+                  }
+                }
+              }
+            );
+          }
+        }
+      );
+    }
+    
+  },
+
+  updateEmployee: (data, callBack) => {
     pool.query(
-      `UPDATE user SET status='0' WHERE user_id=?`,
-      [data.user_id],
-      (error, results,fields) => {
-        if(error){
-          console.log("delete employee error :",error);
+      "UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?",
+      [data.e_mail, data.contact, data.address, data.image, data.user_id],
+      (error, results, fields) => {
+        if (error) {
+          console.log("delete employee error :", error);
           return callBack(error);
         }
-        return callBack(null,results);
+        return callBack(null, results);
       }
     );
   },
-
-  updateEmployee: (data,callBack) => {
-    pool.query(
-      'UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?',
-      [data.e_mail, data.contact , data.address , data.image , data.user_id],
-      (error, results,fields) => {
-        if(error){
-          console.log("delete employee error :",error);
-          return callBack(error);
-        }
-        return callBack(null,results);
-      }
-    )
-  }
 };

@@ -235,10 +235,40 @@ module.exports = {
           }
         )
       },
-      addPracticeSession : (data, callBack) => {
+    //   addPracticeSession : (data, callBack) => {
+    //     pool.query(
+    //         `INSERT INTO practice_sessions `
+    //     )
+    //   },
+      getOldSession:(user_id,date, callBack) => {
+        
         pool.query(
-            `INSERT INTO practice_sessions `
+            `SELECT * FROM practice_sessions WHERE user_id=? AND date < ?`,
+          [user_id,date],
+          (error, results, fields) => {
+            if (error) {
+              console.log("get match error : ", error);
+              return callBack(error);
+            }
+            console.log(results)
+            return callBack(null, results);
+          }
         )
-      }
+      },
+      upCommingSessions:(user_id,date, callBack) => {
+        
+        pool.query(
+            `SELECT * FROM practice_sessions WHERE user_id=? AND date > ?`,
+          [user_id,date],
+          (error, results, fields) => {
+            if (error) {
+              console.log("get match error : ", error);
+              return callBack(error);
+            }
+            console.log(results)
+            return callBack(null, results);
+          }
+        )
+      },
 
 }
