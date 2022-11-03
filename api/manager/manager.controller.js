@@ -30,6 +30,11 @@ const {
 
   deleteMatch,
   addAchivement,
+  getMembership,
+  editMembership,
+  getLastRow,
+  addYearMembership,
+  findPaid,
 
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
@@ -497,7 +502,6 @@ module.exports = {
       });
     });
   },
-
   PlayerRole: (req, res) => {
     const data = req.body;
     playerRole(data, (err, results) => {
@@ -806,6 +810,94 @@ module.exports = {
       return res.json({
         // success: 1,
         data: results,
+      });
+    })
+  },
+
+  GetMembership:(req,res) => {
+    getMembership((err,results)=>{
+      if(err){
+        console.log("get membership data error : ",err);
+        return res.status(500).json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
+      });
+    })
+  },
+
+  EditMembership:(req,res)=>{
+    const data = req.body;
+    editMembership(data,(err, results)=>{
+      if(err){
+        console.log("edit membership data error : ",err);
+        return res.status(500).json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
+      });
+    })
+  },
+
+  AddYearMembership:(req,res)=>{
+    const data = req.body;
+    addYearMembership(data,(err, results)=>{
+      if(err){
+        console.log("add membership data error : ",err.sqlMessage);
+        // return res.json({
+        //   success:0,
+        //   message: "Database connection error",
+        //   data: body,
+        //   err: err.sqlMessage,
+        // });
+      }
+      return res.json({
+        err:err.sqlMessage,
+        data:results,
+      });
+    })
+  },
+  GetLastRow:(req,res)=>{
+    getLastRow((err,results)=>{
+      if(err){
+        console.log("add membership data error : ",err);
+        return res.json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        err:err,
+        data:results,
+      });
+    })
+  },
+  FindPaid:(req, res)=>{
+    const data = req.body;
+    findPaid(data,(err,results)=>{
+      if(err){
+        console.log("find paid data error : ",err);
+        return res.json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
       });
     })
   }

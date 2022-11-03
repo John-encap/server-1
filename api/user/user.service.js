@@ -1,17 +1,18 @@
 const pool = require("../../config/database");
 const { genSaltSync, hashSync } = require("bcrypt");
 const lankaNIC = require("lanka-nic");
+const e = require("express");
 
 module.exports = {
   create: (data, callBack) => {
     const salt = genSaltSync(10);
     const password = hashSync(data.nic, salt);
     if (
-      data.role == "bawling" ||
-      data.role == "batting" ||
-      data.role == "allrounder"
+      data.user_role == "bawler" ||
+      data.user_role == "battsman" ||
+      data.user_role == "allrounder"
     ) {
-      data.role = "player";
+      data.user_role = "player";
     }
     const date = new Date();
 
@@ -228,6 +229,26 @@ module.exports = {
     
   },
 
+//   updateEmployee: (data, callBack) => {
+//     pool.query(
+// <<<<<<< HEAD
+//       "UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?",
+//       [data.e_mail, data.contact, data.address, data.image, data.user_id],
+// =======
+//       `DELETE FROM user WHERE user_id = ?`,
+//       [data.user_id],
+// >>>>>>> bbe4bedd093771f481b4f344c95666b2f5ef300b
+//       (error, results, fields) => {
+//         if (error) {
+//           console.log("delete employee error :", error);
+//           return callBack(error);
+//         }
+//         return callBack(null, results);
+//       }
+//     );
+//   },
+
+
   updateEmployee: (data, callBack) => {
     pool.query(
       "UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?",
@@ -240,5 +261,37 @@ module.exports = {
         return callBack(null, results);
       }
     );
+  },
+  getLastRow: (data, callBack) => {
+    pool.query(
+      `SELECT * FROM user ORDER BY user_id DESC LIMIT 1`,
+      [data.table],
+      (error, results, fiellds) => {
+        if (error) {
+          console.log("get last row error : ", error);
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+  playerDetail: (data, callBack) => {
+    [
+      pool.query(
+        `INSERT INTO player (user_id,player_role,batting_style,bowling_style) VALUES (?,?,?,?)`,
+        [
+          data.user_id,
+          data.user_role,
+          data.batting_style,
+          data.bowling_style,
+        ],
+        (error, results, fields) => {
+          if (error) {
+            return callBack(error);
+          }
+          return callBack(null, results);
+        }
+      ),
+    ];
   },
 };
