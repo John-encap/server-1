@@ -854,15 +854,16 @@ module.exports = {
     addYearMembership(data,(err, results)=>{
       if(err){
         console.log("add membership data error : ",err.sqlMessage);
-        // return res.json({
-        //   success:0,
-        //   message: "Database connection error",
-        //   data: body,
-        //   err: err.sqlMessage,
-        // });
+        return res.json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err.sqlMessage,
+        });
+
       }
       return res.json({
-        err:err.sqlMessage,
+        // err:err,
         data:results,
       });
     })
