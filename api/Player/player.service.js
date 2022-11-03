@@ -725,6 +725,148 @@ module.exports = {
         )
         
     },
+
+    getAllPlayersFS:(callBack) =>{
+        pool.query(
+            `SELECT user.user_id, user.name , player.player_role FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.role=?`,
+            ["player"],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    checkAvailabilityForSession:(title,session_date,starting_time,ending_time,user_id,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches WHERE date=?  `,
+            [session_date],
+             
+            (error,results1,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                else{
+                    if(results1.length===0){pool.query(
+                        `SELECT type,date,time,end_time FROM practice_sessions WHERE date=? AND ((end_time > ? AND time < ?) OR (end_time > ? AND time < ?) OR (end_time < ? AND time > ?) OR (time=? OR end_time=?)) `,
+                        [session_date,starting_time,starting_time,ending_time,ending_time,ending_time,starting_time,starting_time,ending_time],
+                         
+                        (error,results2,fields)=>{
+                            if(error){ 
+                                return callBack(error);
+                            }else{
+                                if(results2.length===0){
+                                    pool.query(
+                                        `INSERT INTO practice_sessions (type, user_id, time, date, end_time) VALUES (?,?,?,?,?)`,
+                                        [title,user_id,starting_time,session_date,ending_time],
+                                         
+                                        (error,results3,fields)=>{
+                                            if(error){ 
+                                                return callBack(error);
+                                            }
+                                            else{
+                                                pool.query(
+                                                    `SELECT MAX(session_id) AS new_session_id FROM practice_sessions`,
+                                                    [],
+                                                     
+                                                    (error,results4,fields)=>{
+                                                        if(error){ 
+                                                            return callBack(error);
+                                                        }
+                                                        console.log(results4)
+                                                        return callBack(null,{
+                                                            status: "successfully added",
+                                                            new_session_id :results4
+                                                        });
+                                        
+                                                    }
+                                        
+                                                )
+                                            }
+                            
+                                        } 
+                            
+                                    )
+
+                                }else{
+                                    console.log(results2)
+                                    return callBack(null,{
+                                        status: "sessions exist",
+                                        session_data :results2
+                                    });
+                                }
+                            }
+                            
+            
+                        }
+            
+                    )}else{
+                        return callBack(null,{
+                            status: "matches exist",
+                            match_data :results1
+                        }); 
+                    }
+                }
+
+            }
+
+        )
+        
+    },
+    deleteNewses:(id,callBack) =>{
+        pool.query(
+            `DELETE FROM practice_sessions WHERE session_id=?`,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,"deleted");
+
+            }
+
+        )
+        
+    },
+    getPlayersToSessions:(list,id,callBack) =>{
+        let arr=[]
+        var str="(?,?)"
+        for(let i=0;i<2*(list.length);i++){
+            arr[i]=id
+            i++
+            console.log(parseInt(i/2, 10))
+            arr[i]=list[parseInt(i/2, 10)]
+            
+        }
+        for(let i=0;i<list.length-1;i++){
+            str+=",(?,?)"
+        }
+        console.log(arr)
+        console.log(str)
+        pool.query(
+            `INSERT INTO player_practice_session (session_id,user_id) VALUES `+str,
+            arr,
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,"Added players to the session");
+
+            }
+
+        )
+        
+    },
     
 
 

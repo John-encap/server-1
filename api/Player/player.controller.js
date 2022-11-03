@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,match,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,getPlayersToSessions,checkAvailabilityForSession,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -939,6 +939,99 @@ module.exports = {
                         success: 1,
                         data: results,
                     });
+                }
+                
+            }
+            
+        });
+        
+    },
+    getAllPlayersFS: (req,res) =>{ 
+        console.log("kk")
+        getAllPlayersFS((err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    checkAvailabilityForSession: (req,res) =>{ 
+        const user_id=req.body.user_id
+        const title=req.body.title
+        const session_date= req.body.session_date
+        const starting_time= req.body.starting_time
+        const ending_time= req.body.ending_time
+        console.log(user_id+title+session_date+starting_time+ending_time)
+        console.log(req.body)
+        checkAvailabilityForSession(title,session_date,starting_time,ending_time,user_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                console.log(results)
+                if(results){
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    deleteNewses: (req,res) =>{ 
+        const new_ses_id=req.body.new_ses_id
+        console.log(new_ses_id)
+        console.log(req.body)
+        deleteNewses(new_ses_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                console.log(results)
+                if(results){
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    getPlayersToSessions:(req,res) =>{ 
+        const list=req.body.list
+        const id=req.body.id
+        getPlayersToSessions(list,id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                console.log(results)
+                if(results){
+                    return res.json(results);
                 }
                 
             }
