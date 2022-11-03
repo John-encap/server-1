@@ -1,4 +1,4 @@
-const {getSessionToday, getSessionAll, checkDateTimePracticeSession, addDateTime, getPlayers, getCoaches, getAssignedPlayers, getAssignedCoaches, markSessionAttendance, allTeamA, pastAndMark, checkEventExist, checkMatchExist, checkSessionExist} = require("./coach.service");
+const {getSessionToday, getSessionAll, checkDateTimePracticeSession, addDateTime, getPlayers,getOldSession, getCoaches,upCommingSessions, getAssignedPlayers, getAssignedCoaches, markSessionAttendance, allTeamA, pastAndMark, checkEventExist, checkMatchExist, checkSessionExist} = require("./coach.service");
 
 
 module.exports = {
@@ -425,6 +425,58 @@ module.exports = {
           }
         });
       },
+      getOldSession: (req, res) => {
+        const id = req.body.user_id;
+        const date = req.body.date;
+        console.log(req.body)
+        getOldSession(id,date,(err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no coaches",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+    upCommingSessions: (req, res) => {
+        const id = req.body.user_id;
+        const date = req.body.date;
+        console.log(req.body)
+        upCommingSessions(id,date,(err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no coaches",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
 
 
 }
