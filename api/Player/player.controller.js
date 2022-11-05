@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,getPlayersToSessions,checkAvailabilityForSession,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -843,7 +843,7 @@ module.exports = {
         
     },
     unmarked_players: (req,res) =>{ 
-        unmarked_players(req.body.match_id,(err,results)=>{
+        unmarked_players(req.body.team_id,(err,results)=>{
             
             if(err) {
                 console.log(err);
@@ -871,6 +871,32 @@ module.exports = {
     updatescore: (req,res) =>{ 
         console.log(req.body)
         updatescore(req.body.user_id,req.body.match_id,req.body.bat_runs,req.body.bat_balls,req.body.six,req.body.four,req.body.overs, req.body.runs, req.body.balls, req.body.ht,req.body.wkt, req.body.NB,req.body.maiden, req.body.WB, req.body.runOut, req.body.catches,req.body.playedd,req.body.notOut,(err,results)=>{
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    updatescore_notP: (req,res) =>{ 
+        console.log(req.body)
+        updatescore(req.body.user_id,req.body.match_id,req.body.played,(err,results)=>{
             if(err) {
                 console.log(err);
                 return
@@ -1031,6 +1057,47 @@ module.exports = {
             else{
                 console.log(results)
                 if(results){
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    SpecSessionDetails:(req,res) =>{ 
+        const id=req.body.id
+        SpecSessionDetails(id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    console.log(results)
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    unmarked_players_marked:(req,res) =>{ 
+        const id=req.body.id
+        // console.log("kkk")
+        unmarked_players_marked(req.body.team_id,req.body.match_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    console.log(results)
                     return res.json(results);
                 }
                 
