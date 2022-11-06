@@ -618,7 +618,7 @@ module.exports = {
     Unmarked:(callBack) =>{
         // console.log("jknkjnkjnknjkjn")
         pool.query(
-            `SELECT matches.match_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked = ? AND matches.date < ? GROUP BY matches.match_id `,
+            `SELECT matches.match_id,matches.team_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked = ? AND matches.date < ? GROUP BY matches.match_id `,
             [0,'2022-10-26'],
              
             (error,results,fields)=>{
@@ -654,7 +654,7 @@ module.exports = {
     unmarked_players:(id,callBack) =>{
         // console.log("jknkjnkjnknjkjn")
         pool.query(
-            `SELECT matches.match_id,matches.match_format as format,matches.date,matches.time,matches.op_team_name,matches.ground, team_player.user_id , user.name AS player_name FROM matches RIGHT JOIN team_player ON matches.team_id=team_player.team_id INNER JOIN user ON team_player.user_id=user.user_id  WHERE matches.match_id = ? `,
+            `SELECT * FROM team_player INNER JOIN user ON team_player.user_id=user.user_id WHERE NOT EXISTS (SELECT user_id FROM player_play_matches WHERE player_play_matches.user_id = team_player.user_id) AND team_player.team_id=? `,
             [id],
              
             (error,results,fields)=>{
@@ -861,6 +861,60 @@ module.exports = {
                 }
                 console.log(results)
                 return callBack(null,"Added players to the session");
+
+            }
+
+        )
+        
+    },
+
+    SpecSessionDetails:(id,callBack) =>{
+        console.log(id)
+        pool.query(
+            `SELECT user.name,practice_sessions.type,practice_sessions.date,practice_sessions.time,practice_sessions.end_time FROM practice_sessions INNER JOIN user ON practice_sessions.user_id=user.user_id WHERE practice_sessions.session_id=?`,
+            [id],
+             
+            (error,result1,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                else{
+                    console.log(result1)
+                    pool.query(
+                        `SELECT player_practice_session.user_id, user.name FROM player_practice_session INNER JOIN user ON player_practice_session.user_id=user.user_id WHERE player_practice_session.session_id=?`,
+                        [id],
+                         
+                        (error,results2,fields)=>{
+                            if(error){ 
+                                return callBack(error);
+                            }
+                            return callBack(null,{
+                                details:result1,
+                                players:results2,
+                            });
+                        }
+            
+                    )
+                }
+
+            }
+
+        )
+        
+    },
+    unmarked_players_marked:(id,match_id,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT * FROM player_play_matches INNER JOIN user ON player_play_matches.user_id=user.user_id WHERE player_play_matches.match_id = ? `,
+            [match_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(match_id)
+                console.log(results)
+                return callBack(null,results);
 
             }
 
