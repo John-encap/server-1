@@ -147,14 +147,44 @@ module.exports = {
     GetMatchPlayers: (body,callBack) =>{ 
         console.log("kk")
         pool.query(
-            `SELECT * ,SUM(runs) as full FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id INNER JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=?`,
+            `SELECT * FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id LEFT JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=? AND player_play_matches.no_of_balls_faced>0`,
             [body.match_id,1],
              
             (error,results,fields)=>{
                 if(error){
                     return callBack(error);
                 }
-                console.log(results)
+                else{
+                    pool.query(
+                        `SELECT SUM(runs) AS total, SUM(outt) AS wkts, SUM(no_of_balls_faced) AS our_balls FROM player_play_matches  WHERE match_id=?`,
+                        [body.match_id],
+                         
+                        (error,results2,fields)=>{
+                            if(error){
+                                return callBack(error);
+                            }
+                            else {console.log(results2[0].our_balls)
+                            results2[0].our_balls=parseInt(results2[0].our_balls/6, 10)+(results2[0].our_balls%6)/10;
+                            console.log(results2[0].our_balls)
+                            return callBack(null,[
+                                results,
+                                results2
+                            ]); }
+                        }
+                    )
+                }
+            }
+        )
+    },
+    matchPlayerBowl:(body,callBack) =>{
+        pool.query(
+            `SELECT * FROM matches INNER JOIN player_play_matches on matches.match_id=player_play_matches.match_id LEFT JOIN user ON user.user_id=player_play_matches.user_id WHERE matches.match_id=? AND matches.marked=? AND player_play_matches.b_no_of_overs>0` ,
+            [body.match_id,1],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
                 return callBack(null,results); 
             }
         )
@@ -472,15 +502,42 @@ module.exports = {
     },
     deleteTeam:(id,callBack) =>{
         pool.query(
-            `DELETE FROM team WHERE team_id=?`,
+            `Select COUNT(match_id) AS count FROM matches WHERE team_id=?`,
             [id],
              
             (error,results,fields)=>{
                 if(error){ 
                     return callBack(error);
                 }
-                console.log(results)
-                return callBack(null,results);
+                else{
+
+                    if(results[0].count>0){
+                        return callBack(null,{
+                            message:"you cant delete this"
+                        })
+                    }
+                    else{
+                        pool.query(
+                            `DELETE FROM team WHERE team_id=?`,
+                            [id],
+                             
+                            (error,results2,fields)=>{
+                                if(error){ 
+                                    return callBack(error);
+                                }
+                                else{
+                                    // console.log(results)
+                                    return callBack(null,{
+                                        message:"deleted successfully"
+                                    });
+                                }
+                
+                            }
+                
+                        )
+                    }
+                    
+                }
 
             }
 
@@ -1056,7 +1113,7 @@ module.exports = {
                 }
 
             }
-
+ 
         )
         
     },

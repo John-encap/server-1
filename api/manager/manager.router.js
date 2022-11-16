@@ -35,6 +35,9 @@ const {
   AddYearMembership,
   GetLastRow,
   FindPaid,
+  GetFeedback,
+  DeleteSession,
+  DeleteEvent,
 } = require("./manager.controller");
 // const { addAchivement } = require("./manager.service");
 
@@ -74,6 +77,9 @@ router.post("/editMembership",EditMembership);
 router.post("/addYearMembership",AddYearMembership);
 router.get("/getLastRow",GetLastRow);
 router.post("/findPaid",FindPaid);
+router.get("/getFeedback", GetFeedback);
+router.post("/deleteSession",DeleteSession);
+router.post("/deleteEvent",DeleteEvent)
 
 module.exports = router;
 

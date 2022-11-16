@@ -60,21 +60,90 @@ module.exports = {
     );
   },
   addSession: (data, callBack) => {
+
+    console.log(data);
     pool.query(
-      `INSERT INTO counseling_session (date, time, mentor, mentor_details, title, place ) VALUES (?,?,?,?,?,?) `,
-      [
-        data.date,
-        data.time,
-        data.mentor,
-        data.mentor_details,
-        data.title,
-        data.place,
-      ],
-      (error, results, fields) => {
+      `SELECT COUNT(date) as eventCount FROM events WHERE date = ?`,
+      [data.date],
+      (error, results1, fields) => {
         if (error) {
+          console.log("insert event error : ", error);
           return callBack(error);
+        } else {
+          if (results1[0].eventCount > 0) {
+            return callBack(null, {
+              success: 0,
+              status: "Insert Fails!",
+              message:
+                "Unable to insert, already have an event on " + data.date,
+            });
+          } else {
+            pool.query(
+              `SELECT COUNT(date) as matchCount FROM matches WHERE date = ?`,
+              [data.date],
+              (error, results2, fields) => {
+                if (error) {
+                  console.log("insert event error : ", error);
+                  return callBack(error);
+                } else {
+                  if (results2[0].matchCount > 0) {
+                    return callBack(null, {
+                      success: 0,
+                      status: "Insert Fails!",
+                      message:
+                        "Unable to insert, already have a match on " +
+                        data.date,
+                    });
+                  } else {
+                    pool.query(
+                      `SELECT COUNT(date) as sessionCount FROM counseling_session WHERE date = ?`,
+                      [data.date],
+                      (error, results3, fields) => {
+                        if (error) {
+                          console.log("insert event error : ", error);
+                          return callBack(error);
+                        } else {
+                          if (results3[0].sessionCount > 0) {
+                            return callBack(null, {
+                              success: 0,
+                              status: "Insert Fails!",
+                              message:
+                                "Unable to insert, already have a session on " +
+                                data.date,
+                            });
+                          } else {
+                            pool.query(
+                              `INSERT INTO counseling_session (date, time, mentor, mentor_details, title, place ) VALUES (?,?,?,?,?,?) `,
+                                [
+                                  data.date,
+                                  data.time,
+                                  data.mentor,
+                                  data.mentor_details,
+                                  data.title,
+                                  data.place,
+                                ],
+                              (error, results, fields) => {
+                                if (error) {
+                                  return callBack(error);
+                                } else {
+                                  return callBack(null, {
+                                    success: 1,
+                                    status: "Successfuly Add!",
+                                    message: "Session Successfuly Added!",
+                                  });
+                                }
+                              }
+                            );
+                          }
+                        }
+                      }
+                    );
+                  }
+                }
+              }
+            );
+          }
         }
-        return callBack(null, results);
       }
     );
   },
@@ -152,14 +221,87 @@ module.exports = {
     );
   },
   insertEvent: (data, callBack) => {
+    console.log(data);
     pool.query(
-      `INSERT INTO events (event_name, date, time, description) VALUES (?,?,?,?) `,
-      [data.name, data.date, data.time, data.description],
-      (error, results, fields) => {
+      `SELECT COUNT(date) as eventCount FROM events WHERE date = ?`,
+      [data.date],
+      (error, results1, fields) => {
         if (error) {
+          console.log("insert event error : ", error);
           return callBack(error);
+        } else {
+          if (results1[0].eventCount > 0) {
+            return callBack(null, {
+              success: 0,
+              status: "Insert Fails!",
+              message:
+                "Unable to insert, already have an event on " + data.date,
+            });
+          } else {
+            pool.query(
+              `SELECT COUNT(date) as matchCount FROM matches WHERE date = ?`,
+              [data.date],
+              (error, results2, fields) => {
+                if (error) {
+                  console.log("insert event error : ", error);
+                  return callBack(error);
+                } else {
+                  if (results2[0].matchCount > 0) {
+                    return callBack(null, {
+                      success: 0,
+                      status: "Insert Fails!",
+                      message:
+                        "Unable to insert, already have a match on " +
+                        data.date,
+                    });
+                  } else {
+                    pool.query(
+                      `SELECT COUNT(date) as sessionCount FROM counseling_session WHERE date = ?`,
+                      [data.date],
+                      (error, results3, fields) => {
+                        if (error) {
+                          console.log("insert event error : ", error);
+                          return callBack(error);
+                        } else {
+                          if (results3[0].sessionCount > 0) {
+                            return callBack(null, {
+                              success: 0,
+                              status: "Insert Fails!",
+                              message:
+                                "Unable to insert, already have a session on " +
+                                data.date,
+                            });
+                          } else {
+                            pool.query(
+                              `INSERT INTO events (event_name, date, time, description) VALUES (?,?,?,?)`,
+                              [
+                                data.name,
+                                data.date,
+                                data.time,
+                                data.description,
+                              ],
+                              (error, results, fields) => {
+                                if (error) {
+                                  return callBack(error);
+                                } else {
+                                  return callBack(null, {
+                                    success: 1,
+                                    status: "Successfuly Add!",
+                                    message: "Event Successfuly Added!",
+                                  });
+                                }
+                              }
+                            );
+                          }
+                        }
+                      }
+                    );
+                  }
+                }
+              }
+            );
+          }
         }
-        return callBack(null, results);
       }
     );
   },
@@ -295,8 +437,21 @@ module.exports = {
   },
   deleteEvent: (data, callBack) => {
     pool.query(
-      `DELETE FROM EVENTS WHERE EVENT_ID = ?`,
+      `DELETE FROM events WHERE event_id = ?`,
       [data.event_id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+
+  deleteSession: (data,callBack)=>{
+    pool.query(
+      `DELETE FROM counseling_session WHERE c_session_id = ?`,
+      [data.session_id],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
@@ -400,10 +555,7 @@ module.exports = {
   editMembership: (data, callBack) => {
     pool.query(
       `UPDATE membership_fee SET amount = ? WHERE year = ? `,
-      [
-        data.amount, 
-        data.year
-      ],
+      [data.amount, data.year],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
@@ -434,17 +586,29 @@ module.exports = {
       }
     );
   },
-  findPaid: (data, callBack)=>{
+  findPaid: (data, callBack) => {
     pool.query(
       `SELECT * FROM payment WHERE year = ?`,
-      [
-        data.year
-      ],
+      [data.year],
       (error, results, fields) => {
         if (error) {
           return callBack(error);
         }
         return callBack(null, results);
+      }
+    );
+  },
+
+  getFeedback: (callBack)=>{
+    pool.query(
+      `SELECT club_feedback.feedback, club_feedback.date, user.name, user.role FROM club_feedback LEFT JOIN user ON club_feedback.user_id=user.user_id ORDER BY club_feedback.date DESC`,
+      [],
+      (error,results,fields)=>{
+        if(error) {
+          return callBack(error);
+        }else{
+          return callBack(null,results);
+        }
       }
     );
   }

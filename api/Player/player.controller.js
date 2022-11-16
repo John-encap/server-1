@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,updatescore_notP,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,matchPlayerBowl,updatescore_notP,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -258,6 +258,8 @@ module.exports = {
                 });
             }
             else{
+                console.log(results)
+
                 if(results){
                     return res.json({
                         success: 1,
@@ -286,10 +288,43 @@ module.exports = {
                 });
             }
             else{
+                // console.log(results[0])
+                // console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
                 if(results){
                     return res.json({
                         success: 1,
-                        data: results,
+                        data: results[0],
+                        data2: results[1],
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    matchPlayerBowl: (req,res) =>{ 
+        const body = req.body;
+        console.log(body)
+        matchPlayerBowl(body, (err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                // console.log(results[0])
+                // console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results
                     });
                 }
                 
