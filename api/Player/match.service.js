@@ -26,7 +26,7 @@ module.exports = {
 
     GetPastMatches: (body,callBack) =>{
         pool.query(
-            `SELECT * FROM matches WHERE marked = ?` ,
+            `SELECT *, SUM(player_play_matches.runs) AS total , SUM(outt) AS wkts, SUM(no_of_balls_faced) AS balls FROM matches INNER JOIN player_play_matches ON matches.match_id=player_play_matches.match_id WHERE marked = ? GROUP BY player_play_matches.match_id;` ,
             [1],
              
             (error,results,fields)=>{

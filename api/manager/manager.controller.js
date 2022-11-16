@@ -27,7 +27,6 @@ const {
   addMatchTitle,
   getMatchTitle,
 
-
   deleteMatch,
   addAchivement,
   getMembership,
@@ -35,7 +34,8 @@ const {
   getLastRow,
   addYearMembership,
   findPaid,
-
+  getFeedback,
+  deleteSession,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -128,7 +128,7 @@ module.exports = {
   },
 
   PaidPlayer: (req, res) => {
-    console.log("inside paid")
+    console.log("inside paid");
     selectPaidPlayer((err, results) => {
       if (err) {
         console.log("error adfsvfs", err);
@@ -147,7 +147,6 @@ module.exports = {
   },
 
   UnpaidPlayer: (req, res) => {
-
     // console.log("inside unpaid")
     selectUnpaidPlayer((err, results) => {
       if (err) {
@@ -210,132 +209,40 @@ module.exports = {
     let eventExist = 0;
     let matchExist = 0;
     const data = req.body;
-
-    checkEventExist(data, (err, result) => {
-      if (err) {
+    insertEvent(data,(error, results) => {
+      if (error) {
+        console.log("insert event controller :", error);
         return res.status(500).json({
           success: 0,
-          error: err,
+          message: "Database Connection Error",
+          data: body,
+          err: error,
         });
       }
-      eventExist = Object.keys(result).length;
-
-      if (eventExist === 0) {
-        checkMatchExist(data, (err, result) => {
-          if (err) {
-            return res.status(500).json({
-              success: 0,
-              error: err,
-            });
-          }
-          matchExist = Object.keys(result).length;
-
-          if (matchExist === 0) {
-            insertEvent(data, (err, result) => {
-              if (err) {
-                return res.status(500).json({
-                  success: 0,
-                  error: err,
-                });
-              }
-
-              return res.json({
-                message: `Event Added Successfully`,
-                success: 1,
-                data: result,
-              });
-            });
-          } else {
-            return res.json({
-              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
-              success: 0,
-              matchExist: matchExist,
-            });
-          }
-        });
-      } else {
-        return res.json({
-          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
-          success: 0,
-          eventExist: eventExist,
-        });
-      }
-    });
+      return res.status(200).json({
+        result: results,
+      });
+    })
   },
+
   AddSession: (req, res) => {
-    let eventExist = 0;
-    let matchExist = 0;
-    let sessionExist = 0;
     const data = req.body;
 
-    checkEventExist(data, (err, result) => {
-      if (err) {
+    addSession(data,(error, results) => {
+      if(error){
+        console.log("insert session controller :", error);
         return res.status(500).json({
           success: 0,
-          error: err,
+          message: "Database Connection Error",
+          data: body,
+          err: error,
         });
       }
-      eventExist = Object.keys(result).length;
+      return res.status(200).json({
+        result: results,
+      });
+    })
 
-      if (eventExist === 0) {
-        checkMatchExist(data, (err, result) => {
-          if (err) {
-            return res.status(500).json({
-              success: 0,
-              error: err,
-            });
-          }
-          matchExist = Object.keys(result).length;
-
-          if (matchExist === 0) {
-            checkSessionExist(data, (err, result) => {
-              if (err) {
-                return res.status(500).json({
-                  success: 0,
-                  error: err,
-                });
-              }
-              eventExist = Object.keys(result).length;
-
-              if (eventExist === 0) {
-                addSession(data, (err, result) => {
-                  if (err) {
-                    return res.status(500).json({
-                      success: 0,
-                      error: err,
-                    });
-                  }
-
-                  return res.json({
-                    message: `Session Added Successfully`,
-                    success: 1,
-                    data: result,
-                  });
-                });
-              } else {
-                return res.json({
-                  message: `Already Have "${result[0].title}" Session on "${result[0].date}"`,
-                  success: 0,
-                  data: result,
-                });
-              }
-            });
-          } else {
-            return res.json({
-              message: `Already Have "${result[0].match_format}" Match on "${result[0].date}"`,
-              success: 0,
-              matchExist: matchExist,
-            });
-          }
-        });
-      } else {
-        return res.json({
-          message: `Already Have "${result[0].event_name}" Event on "${result[0].date}"`,
-          success: 0,
-          eventExist: eventExist,
-        });
-      }
-    });
   },
   GetUpcommingEvent: (req, res) => {
     var CurrentDate = new Date();
@@ -675,7 +582,6 @@ module.exports = {
         });
       }
       return res.json({
-
         data: results,
       });
     });
@@ -712,8 +618,8 @@ module.exports = {
         });
       }
       eventExist = Object.keys(result).length;
-      console.log("event exist : ",eventExist);
-    
+      console.log("event exist : ", eventExist);
+
       if (eventExist === 0) {
         checkMatchExist(data, (err, result) => {
           if (err) {
@@ -723,7 +629,7 @@ module.exports = {
             });
           }
           matchExist = Object.keys(result).length;
-          console.log("match exist : ",matchExist);
+          console.log("match exist : ", matchExist);
           if (matchExist === 0) {
             checkSessionExist(data, (err, result) => {
               if (err) {
@@ -733,7 +639,7 @@ module.exports = {
                 });
               }
               sessionExist = Object.keys(result).length;
-              console.log("session exist : ",sessionExist);
+              console.log("session exist : ", sessionExist);
               if (sessionExist === 0) {
                 create(data, (err, result) => {
                   if (err) {
@@ -795,9 +701,9 @@ module.exports = {
     });
   },
 
-  AddAchivement:(req,res) =>{
+  AddAchivement: (req, res) => {
     const data = req.body;
-    addAchivement(data,(err,results)=>{
+    addAchivement(data, (err, results) => {
       if (err) {
         console.log("error delete match controller", err);
         return res.status(500).json({
@@ -811,85 +717,100 @@ module.exports = {
         // success: 1,
         data: results,
       });
-    })
+    });
   },
 
-  GetMembership:(req,res) => {
-    getMembership((err,results)=>{
-      if(err){
-        console.log("get membership data error : ",err);
+  GetMembership: (req, res) => {
+    getMembership((err, results) => {
+      if (err) {
+        console.log("get membership data error : ", err);
         return res.status(500).json({
-          success:0,
+          success: 0,
           message: "Database connection error",
           data: body,
           err: err,
         });
       }
       return res.json({
-        data:results,
+        data: results,
       });
-    })
+    });
   },
 
-  EditMembership:(req,res)=>{
+  EditMembership: (req, res) => {
     const data = req.body;
-    editMembership(data,(err, results)=>{
-      if(err){
-        console.log("edit membership data error : ",err);
+    editMembership(data, (err, results) => {
+      if (err) {
+        console.log("edit membership data error : ", err);
         return res.status(500).json({
-          success:0,
+          success: 0,
           message: "Database connection error",
           data: body,
           err: err,
         });
       }
       return res.json({
-        data:results,
+        data: results,
       });
-    })
+    });
   },
 
-  AddYearMembership:(req,res)=>{
+  AddYearMembership: (req, res) => {
     const data = req.body;
-    addYearMembership(data,(err, results)=>{
-      if(err){
-        console.log("add membership data error : ",err.sqlMessage);
+    addYearMembership(data, (err, results) => {
+      if (err) {
+        console.log("add membership data error : ", err.sqlMessage);
         return res.json({
-          success:0,
+          success: 0,
           message: "Database connection error",
           data: body,
           err: err.sqlMessage,
         });
-
       }
       return res.json({
         // err:err,
-        data:results,
+        data: results,
       });
-    })
+    });
   },
-  GetLastRow:(req,res)=>{
-    getLastRow((err,results)=>{
-      if(err){
-        console.log("add membership data error : ",err);
+  GetLastRow: (req, res) => {
+    getLastRow((err, results) => {
+      if (err) {
+        console.log("add membership data error : ", err);
         return res.json({
-          success:0,
+          success: 0,
           message: "Database connection error",
           data: body,
           err: err,
         });
       }
       return res.json({
-        err:err,
-        data:results,
+        err: err,
+        data: results,
       });
-    })
+    });
   },
-  FindPaid:(req, res)=>{
+  FindPaid: (req, res) => {
     const data = req.body;
-    findPaid(data,(err,results)=>{
+    findPaid(data, (err, results) => {
+      if (err) {
+        console.log("find paid data error : ", err);
+        return res.json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data: results,
+      });
+    });
+  },
+  GetFeedback: (req, res) =>{
+    getFeedback((err, results) => {
       if(err){
-        console.log("find paid data error : ",err);
+        console.log("get feedback error : ",err);
         return res.json({
           success:0,
           message: "Database connection error",
@@ -899,9 +820,42 @@ module.exports = {
       }
       return res.json({
         data:results,
+      });
+    });
+  },
+  DeleteSession:(req,res) => {
+    const data = req.body;
+    deleteSession(data, (err, results) => {
+      if (err) {
+        console.log("find paid data error : ", err);
+        return res.json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data: results,
+      });
+    });
+  },
+  DeleteEvent: (req,res) => {
+    const data = req.body;
+    deleteEvent(data, (err, results) => {
+      if (err) {
+        console.log("find paid data error : ", err);
+        return res.json({
+          success: 0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data: results,
       });
     })
   }
+
 };
-
-
