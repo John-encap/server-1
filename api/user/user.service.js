@@ -76,7 +76,7 @@ module.exports = {
   },
   login: (email, callBack) => {
     pool.query(
-      `SELECT user_id, name, gender, nic, contact, email, address,role,password FROM user WHERE email=?`,
+      `SELECT user_id,image, name, gender, nic, contact, email, address,role,password FROM user WHERE email=?`,
       [email],
 
       (error, results, fields) => {

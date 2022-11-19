@@ -224,7 +224,7 @@ module.exports = {
     GetRanking: (catagory,format,callBack) =>{
         console.log(catagory+format)
         pool.query(
-            `SELECT user.name,player_play_matches.user_id, SUM(player_play_matches.runs) AS sumRuns , COUNT(player_play_matches.match_id) AS numMatches , SUM(player_play_matches.no_of_balls_faced) AS sumBalls, SUM(player_play_matches.b_no_of_overs) AS overs , SUM(player_play_matches.b_runs) AS b_runs , SUM(player_play_matches.b_wkts) AS b_wkts , SUM(player_play_matches.b_maiden_overs) AS m_overs , SUM(player_play_matches.b_htricks) AS b_htricks,SUM(player_play_matches.b_wide_balls) AS b_wide_balls,SUM(player_play_matches.b_no_balls) AS b_no_balls,SUM(player_play_matches.sixes) AS sixes,SUM(player_play_matches.fours) AS fours,SUM(player_play_matches.field_runout) AS field_runout,SUM(player_play_matches.no_of_catches) AS no_of_catches   FROM player_play_matches INNER JOIN user ON  player_play_matches.user_id=user.user_id WHERE played=? AND format=? GROUP BY user_id`,
+            `SELECT user.name,user.image,player_play_matches.user_id, SUM(player_play_matches.runs) AS sumRuns , COUNT(player_play_matches.match_id) AS numMatches , SUM(player_play_matches.no_of_balls_faced) AS sumBalls, SUM(player_play_matches.b_no_of_overs) AS overs , SUM(player_play_matches.b_runs) AS b_runs , SUM(player_play_matches.b_wkts) AS b_wkts , SUM(player_play_matches.b_maiden_overs) AS m_overs , SUM(player_play_matches.b_htricks) AS b_htricks,SUM(player_play_matches.b_wide_balls) AS b_wide_balls,SUM(player_play_matches.b_no_balls) AS b_no_balls,SUM(player_play_matches.sixes) AS sixes,SUM(player_play_matches.fours) AS fours,SUM(player_play_matches.field_runout) AS field_runout,SUM(player_play_matches.no_of_catches) AS no_of_catches   FROM player_play_matches INNER JOIN user ON  player_play_matches.user_id=user.user_id WHERE played=? AND format=? GROUP BY user_id`,
             [1,format],
              
             (error,results,fields)=>{
@@ -315,7 +315,7 @@ module.exports = {
 
     intro: (user_id,callBack) =>{
         pool.query(
-            `SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(now(),user.dob)), '%Y')+0 AS Age , user.name, player.player_role,player.batting_style,player.bowling_style FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.user_id = ?`,
+            `SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(now(),user.dob)), '%Y')+0 AS Age ,user.image, user.name, player.player_role,player.batting_style,player.bowling_style FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.user_id = ?`,
             [user_id],
              
             (error,results,fields)=>{
@@ -709,7 +709,7 @@ module.exports = {
         
     },
     unmarked_players:(id,match_id,callBack) =>{
-        console.log("jknkjnkjnknjkjn")
+        // console.log("jknkjnkjnknjkjn")
         pool.query(
             `SELECT * FROM team_player INNER JOIN user ON team_player.user_id=user.user_id WHERE NOT EXISTS (SELECT user_id FROM player_play_matches WHERE player_play_matches.user_id = team_player.user_id AND player_play_matches.match_id=?) AND team_player.team_id=? ORDER BY team_player.user_id ASC`,
             [match_id,id],
@@ -719,6 +719,24 @@ module.exports = {
                     return callBack(error);
                 }
                 // console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    check_op_score:(id,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT op_score,op_overs,op_wickets FROM matches WHERE match_id = ? `,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
                 return callBack(null,results);
 
             }
@@ -1122,6 +1140,25 @@ module.exports = {
         pool.query(
             `SELECT * FROM player_play_matches INNER JOIN user ON player_play_matches.user_id=user.user_id WHERE player_play_matches.match_id = ? ORDER BY player_play_matches.user_id ASC`,
             [match_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                // console.log(match_id)
+                // console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    score_update:(match_id,team_id,total,wiclets,overs,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `UPDATE matches SET op_score = ? , op_overs = ? , op_wickets= ? WHERE matches.match_id = ?`,
+            [total,overs,wiclets,match_id],
              
             (error,results,fields)=>{
                 if(error){ 
