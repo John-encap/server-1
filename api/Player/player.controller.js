@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,matchPlayerBowl,updatescore_notP,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {GetSessions,GetSessionPlayers,GetSessionCoach,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 module.exports = {
@@ -1125,6 +1125,47 @@ module.exports = {
         const id=req.body.id
         // console.log("kkk")
         unmarked_players_marked(req.body.team_id,req.body.match_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    // console.log(results)
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    check_op_score:(req,res) =>{ 
+        // const id=req.body.id
+        // console.log(req.body.match_id+"kkkkkkk")
+        check_op_score(req.body.match_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    // console.log(results)
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    score_update:(req,res) =>{ 
+        console.log(req.body)
+        score_update(req.body.match_id,req.body.team_id,req.body.total,req.body.wiclets,req.body.overs,(err,results)=>{
             
             if(err) {
                 console.log(err);
