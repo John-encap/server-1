@@ -59,6 +59,74 @@ module.exports = {
       }
     );
   },
+  addPracticeMatch: (data, callBack) => {
+
+    console.log(data);
+    pool.query(
+      `SELECT COUNT(date) as eventCount FROM events WHERE date = ?`,
+      [data.date],
+      (error, results1, fields) => {
+        if (error) {
+          console.log("insert event error : ", error);
+          return callBack(error);
+        } else {
+          if (results1[0].eventCount > 0) {
+            return callBack(null, {
+              success: 0,
+              status: "Insert Fails!",
+              message:
+                "Unable to insert, already have an event on " + data.date,
+            });
+          } else {
+            pool.query(
+              `SELECT COUNT(date) as matchCount FROM matches WHERE date = ?`,
+              [data.date],
+              (error, results2, fields) => {
+                if (error) {
+                  console.log("insert event error : ", error);
+                  return callBack(error);
+                } else {
+                  if (results2[0].matchCount > 0) {
+                    return callBack(null, {
+                      success: 0,
+                      status: "Insert Fails!",
+                      message:
+                        "Unable to insert, already have a match on " +
+                        data.date,
+                    });
+                  } else{
+                    pool.query(
+                      `INSERT INTO matches (match_format, ground, date, time, op_team_name,title,team_icon ) VALUES (?,?,?,?,?,?,?) `,
+                      [
+                        data.match_format,
+                        data.ground,
+                        data.date,
+                        data.time,
+                        data.op_team_name,
+                        data.title,
+                        data.team_icon,
+                      ],
+                      (error, results, fields) => {
+                        if (error) {
+                          return callBack(error);
+                        } else {
+                          return callBack(null, {
+                            success: 1,
+                            status: "Successfuly Add!",
+                            message: "Session Successfuly Added!",
+                          });
+                        }
+                      }
+                    );
+                  }
+                }
+              }
+            );
+          }
+        }
+      }
+    );
+  },
   addSession: (data, callBack) => {
 
     console.log(data);

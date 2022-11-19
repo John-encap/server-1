@@ -315,7 +315,7 @@ module.exports = {
 
     intro: (user_id,callBack) =>{
         pool.query(
-            `SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(now(),user.dob)), '%Y')+0 AS Age , user.name, player.player_role,player.batting_style,player.bowling_style FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.user_id = ?`,
+            `SELECT DATE_FORMAT(FROM_DAYS(DATEDIFF(now(),user.dob)), '%Y')+0 AS Age ,user.image, user.name, player.player_role,player.batting_style,player.bowling_style FROM user INNER JOIN player ON user.user_id=player.user_id WHERE user.user_id = ?`,
             [user_id],
              
             (error,results,fields)=>{
