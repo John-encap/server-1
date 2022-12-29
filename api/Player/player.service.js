@@ -545,9 +545,16 @@ module.exports = {
         
     },
     addTeamMatches:(callBack) =>{
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log(today)
         pool.query(
-            `SELECT op_team_name,match_format,date,ground,match_id FROM matches WHERE date > ? AND team_id=?`,
-            ['2022-10-26',0],
+            `SELECT op_team_name,match_format,date,ground,match_id FROM matches WHERE date > ? AND team_id=? ORDER BY matches.date ASC`,
+            [today,0],
              
             (error,results,fields)=>{
                 if(error){ 
@@ -562,9 +569,16 @@ module.exports = {
         
     },
     future:(callBack) =>{
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log(today)
         pool.query(
-            `SELECT team.name,matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id FROM matches INNER JOIN team ON matches.team_id=team.team_id  WHERE matches.date > ? AND matches.team_id>?`,
-            ['2022-10-26',0],
+            `SELECT team.name,matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id FROM matches INNER JOIN team ON matches.team_id=team.team_id  WHERE matches.date > ? AND matches.team_id>? ORDER BY matches.date ASC`,
+            [today,0],
              
             (error,results,fields)=>{
                 if(error){ 
@@ -674,9 +688,16 @@ module.exports = {
     },
     Unmarked:(callBack) =>{
         // console.log("jknkjnkjnknjkjn")
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log(today)
         pool.query(
-            `SELECT matches.match_id,matches.team_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked = ? AND matches.date < ? GROUP BY matches.match_id `,
-            [0,'2022-10-26'],
+            `SELECT matches.match_id,matches.team_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked = ? AND matches.date < ? GROUP BY matches.match_id ORDER BY matches.date ASC`,
+            [0,today],
              
             (error,results,fields)=>{
                 if(error){ 
@@ -924,9 +945,16 @@ module.exports = {
     },
     marked:(callBack) =>{
         // console.log("jknkjnkjnknjkjn")
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log(today)
         pool.query(
-            `SELECT matches.match_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked > ? AND matches.date < ? GROUP BY matches.match_id `,
-            [0,'2022-10-26'],
+            `SELECT matches.match_id,matches.match_format as format,matches.date,team.name,matches.time,matches.op_team_name,matches.ground FROM matches LEFT JOIN team ON matches.team_id=team.team_id WHERE matches.marked > ? AND matches.date < ? GROUP BY matches.match_id ORDER BY matches.date DESC`,
+            [0,today],
              
             (error,results,fields)=>{
                 if(error){ 

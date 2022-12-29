@@ -243,7 +243,7 @@ module.exports = {
       getOldSession:(user_id,date, callBack) => {
         
         pool.query(
-            `SELECT * FROM practice_sessions WHERE user_id=? AND date < ?`,
+            `SELECT * FROM practice_sessions WHERE user_id=? AND date < ? ORDER BY practice_sessions.date DESC`,
           [user_id,date],
           (error, results, fields) => {
             if (error) {
@@ -258,7 +258,7 @@ module.exports = {
       upCommingSessions:(user_id,date, callBack) => {
         
         pool.query(
-            `SELECT * FROM practice_sessions WHERE user_id=? AND date > ?`,
+            `SELECT * FROM practice_sessions WHERE user_id=? AND date > ? ORDER BY practice_sessions.date ASC`,
           [user_id,date],
           (error, results, fields) => {
             if (error) {
