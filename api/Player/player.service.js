@@ -772,175 +772,202 @@ module.exports = {
         var ovr=overs+balls/10
         var format=""
         pool.query(
-            `SELECT match_format FROM matches WHERE match_id=?`,
-            [id],
-            // `INSERT INTO player_play_matches (match_id, user_id, b_no_of_overs, b_wide_balls, b_no_balls, b_maiden_overs, b_wkts, field_runout, no_of_catches, batting_nummber, played, sixes, fours, runs, no_of_balls_faced, out, b_runs, b_htricks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `DELETE FROM player_play_matches WHERE match_id = ? AND user_id = ?`,
+            [id,player],
+             
             (error,results,fields)=>{
-                if(error){  
-                    return callBack(error); 
+                if(error){ 
+                    return callBack(error);
                 }
-                else{
-                    console.log(notOut) 
-                    format=(results[0].match_format).toUpperCase()
-                    pool.query(
-                        `INSERT INTO player_play_matches (match_id, user_id, b_no_of_overs, b_wide_balls, b_no_balls, b_maiden_overs, b_wkts, field_runout, no_of_catches ,batting_nummber,played,sixes,fours, runs, no_of_balls_faced,b_runs,b_htricks,format) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
-                        [id,player,ovr,WB,NB, maiden, wkt, runOut,catches,AT,playedd,six,four, bat_runs, bat_balls,runs,ht,format],
-                         
-                        (error,results1,fields)=>{
-                            if(error){ 
-                                console.log("kkkk")  
-                            }
-                            else{
-                                console.log(results1)
-                                pool.query(
-                                    `SELECT COUNT(user_id) AS total_players FROM team_player  WHERE team_id=?`,
-                                    [team],
-                                     
-                                    (error,results2,fields)=>{
-                                        if(error){ 
-                                            // return callBack(error);
-                                        }
-                                        else{
-                                            console.log(results2)
-                                            pool.query(
-                                                `SELECT COUNT(user_id) AS marked_players FROM player_play_matches  WHERE match_id=?`,
-                                                [id],
-                                                 
-                                                (error,results3,fields)=>{
-                                                    if(error){  
-                                                        // return callBack(error);
-                                                    }
-                                                    else{
-                                                        if(results2[0].total_players===results3[0].marked_players){
-                                                            pool.query(
-                                                                `UPDATE matches SET marked = ? WHERE matches.match_id = ?`,
-                                                                [1,id],
-                                                                 
-                                                                (error,results,fields)=>{
-                                                                    if(error){ 
-                                                                        return callBack(error);
-                                                                    }
-                                                                    console.log(results)
-                                                                    return callBack(null,results);
-                                                    
-                                                                }
-                                                    
-                                                            )
-                                                        }
-                                                        // return callBack(null,results);
-                                                    } 
-                                    
-                                                }
-                                    
-                                            )
-                                            // return callBack(null,results);
-                                        } 
-                        
-                                    }
-                        
-                                )
-
-                            }
-                            
-                            // return callBack(null,results1);
-            
+                console.log("hii brother")
+                pool.query(
+                    `SELECT match_format FROM matches WHERE match_id=?`,
+                    [id],
+                    // `INSERT INTO player_play_matches (match_id, user_id, b_no_of_overs, b_wide_balls, b_no_balls, b_maiden_overs, b_wkts, field_runout, no_of_catches, batting_nummber, played, sixes, fours, runs, no_of_balls_faced, out, b_runs, b_htricks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    (error,results,fields)=>{
+                        if(error){  
+                            return callBack(error); 
                         }
-            
-                    )
+                        else{
+                            console.log(notOut) 
+                            format=(results[0].match_format).toUpperCase()
+                            pool.query(
+                                `INSERT INTO player_play_matches (match_id, user_id, b_no_of_overs, b_wide_balls, b_no_balls, b_maiden_overs, b_wkts, field_runout, no_of_catches ,batting_nummber,played,sixes,fours, runs, no_of_balls_faced,b_runs,b_htricks,format) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
+                                [id,player,ovr,WB,NB, maiden, wkt, runOut,catches,AT,playedd,six,four, bat_runs, bat_balls,runs,ht,format],
+                                 
+                                (error,results1,fields)=>{
+                                    if(error){ 
+                                        console.log("kkkk")  
+                                    }
+                                    else{
+                                        console.log(results1)
+                                        pool.query(
+                                            `SELECT COUNT(user_id) AS total_players FROM team_player  WHERE team_id=?`,
+                                            [team],
+                                             
+                                            (error,results2,fields)=>{
+                                                if(error){ 
+                                                    // return callBack(error);
+                                                }
+                                                else{
+                                                    console.log(results2)
+                                                    pool.query(
+                                                        `SELECT COUNT(user_id) AS marked_players FROM player_play_matches  WHERE match_id=?`,
+                                                        [id],
+                                                         
+                                                        (error,results3,fields)=>{
+                                                            if(error){  
+                                                                // return callBack(error);
+                                                            }
+                                                            else{
+                                                                if(results2[0].total_players===results3[0].marked_players){
+                                                                    pool.query(
+                                                                        `UPDATE matches SET marked = ? WHERE matches.match_id = ?`,
+                                                                        [1,id],
+                                                                         
+                                                                        (error,results,fields)=>{
+                                                                            if(error){ 
+                                                                                return callBack(error);
+                                                                            }
+                                                                            console.log(results)
+                                                                            return callBack(null,results);
+                                                            
+                                                                        }
+                                                            
+                                                                    )
+                                                                }
+                                                                // return callBack(null,results);
+                                                            } 
+                                            
+                                                        }
+                                            
+                                                    )
+                                                    // return callBack(null,results);
+                                                } 
+                                
+                                            }
+                                
+                                        )
+        
+                                    }
+                                    
+                                    // return callBack(null,results1);
                     
-                    return callBack(null,results);
-                }
+                                }
+                    
+                            )
+                            
+                            return callBack(null,results);
+                        }
+        
+                    }
+        
+                )
 
             }
 
         )
         
+        
     },
     updatescore_notP:(player,id,playedd,team,callBack) =>{
         var format=""
         pool.query(
-            `SELECT match_format FROM matches WHERE match_id=?`,
-            [id],
+            `DELETE FROM player_play_matches WHERE match_id = ? AND user_id = ?`,
+            [id,player],
+             
             (error,results,fields)=>{
-                if(error){  
-                    return callBack(error); 
+                if(error){ 
+                    return callBack(error);
                 }
-                else{
-                    format=(results[0].match_format).toUpperCase()
-                    pool.query(
-                        `INSERT INTO player_play_matches (match_id, user_id,played,format) VALUES (?, ?, ?, ?)`,
-                        [id,player,playedd,format],
-                         
-                        (error,results1,fields)=>{
-                            if(error){ 
-                                console.log("kkkk")  
-                            }
-                            else{
-                                console.log(results1)
-                                pool.query(
-                                    `SELECT COUNT(user_id) AS total_players FROM team_player  WHERE team_id=?`,
-                                    [team],
-                                     
-                                    (error,results2,fields)=>{
-                                        if(error){ 
-                                            // return callBack(error);
-                                        }
-                                        else{
-                                            console.log(results2)
-                                            pool.query(
-                                                `SELECT COUNT(user_id) AS marked_players FROM player_play_matches  WHERE match_id=?`,
-                                                [id],
-                                                 
-                                                (error,results3,fields)=>{
-                                                    if(error){  
-                                                        // return callBack(error);
-                                                    }
-                                                    else{
-                                                        console.log(results2[0].total_players+"    "+results3[0].marked_players)
-                                                        if(results2[0].total_players===results3[0].marked_players){
-                                                            console.log("complete")
-                                                            pool.query(
-                                                                `UPDATE matches SET marked = ? WHERE matches.match_id = ?`,
-                                                                [1,id],
-                                                                 
-                                                                (error,results,fields)=>{
-                                                                    if(error){ 
-                                                                        return callBack(error);
-                                                                    }
-                                                                    console.log(results)
-                                                                    return callBack(null,results);
-                                                    
-                                                                }
-                                                    
-                                                            )
-                                                        }
-                                                        // return callBack(null,results);
-                                                    } 
-                                    
-                                                }
-                                    
-                                            )
-                                            // return callBack(null,results);
-                                        } 
-                        
-                                    }
-                        
-                                )
-
-                            }
-                            
-                            // return callBack(null,results1);
-            
+                pool.query(
+                    `SELECT match_format FROM matches WHERE match_id=?`,
+                    [id],
+                    (error,results,fields)=>{
+                        if(error){  
+                            return callBack(error); 
                         }
-            
-                    )
+                        else{
+                            format=(results[0].match_format).toUpperCase()
+                            pool.query(
+                                `INSERT INTO player_play_matches (match_id, user_id,played,format) VALUES (?, ?, ?, ?)`,
+                                [id,player,playedd,format],
+                                 
+                                (error,results1,fields)=>{
+                                    if(error){ 
+                                        console.log("kkkk")  
+                                    }
+                                    else{
+                                        console.log(results1)
+                                        pool.query(
+                                            `SELECT COUNT(user_id) AS total_players FROM team_player  WHERE team_id=?`,
+                                            [team],
+                                             
+                                            (error,results2,fields)=>{
+                                                if(error){ 
+                                                    // return callBack(error);
+                                                }
+                                                else{
+                                                    console.log(results2)
+                                                    pool.query(
+                                                        `SELECT COUNT(user_id) AS marked_players FROM player_play_matches  WHERE match_id=?`,
+                                                        [id],
+                                                         
+                                                        (error,results3,fields)=>{
+                                                            if(error){  
+                                                                // return callBack(error);
+                                                            }
+                                                            else{
+                                                                console.log(results2[0].total_players+"    "+results3[0].marked_players)
+                                                                if(results2[0].total_players===results3[0].marked_players){
+                                                                    console.log("complete")
+                                                                    pool.query(
+                                                                        `UPDATE matches SET marked = ? WHERE matches.match_id = ?`,
+                                                                        [1,id],
+                                                                         
+                                                                        (error,results,fields)=>{
+                                                                            if(error){ 
+                                                                                return callBack(error);
+                                                                            }
+                                                                            console.log(results)
+                                                                            return callBack(null,results);
+                                                            
+                                                                        }
+                                                            
+                                                                    )
+                                                                }
+                                                                // return callBack(null,results);
+                                                            } 
+                                            
+                                                        }
+                                            
+                                                    )
+                                                    // return callBack(null,results);
+                                                } 
+                                
+                                            }
+                                
+                                        )
+        
+                                    }
+                                    
+                                    // return callBack(null,results1);
                     
-                    return callBack(null,results);
-                }
+                                }
+                    
+                            )
+                            
+                            return callBack(null,results);
+                        }
+        
+                    }
+        
+                )
 
             }
 
         )
+        
         
     },
     marked:(callBack) =>{
@@ -966,6 +993,7 @@ module.exports = {
             }
 
         )
+        
         
     },
     match:(body,callBack) =>{
@@ -1194,6 +1222,25 @@ module.exports = {
                 }
                 // console.log(match_id)
                 // console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    getDataforValidation:(match_id,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT SUM(b_no_of_overs) AS b_overs, SUM(b_wkts) AS wkts, format, SUM(no_of_balls_faced) AS balls_faced FROM player_play_matches WHERE match_id=?`,
+            [match_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(match_id)
+                console.log(results)
                 return callBack(null,results);
 
             }
