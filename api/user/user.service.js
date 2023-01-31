@@ -130,7 +130,7 @@ module.exports = {
 
   select_player: (data, callBack) => {
     pool.query(
-      `SELECT name , role,contact, email, role ,address, image FROM user WHERE user_id = ? `,
+      `SELECT name , role,contact, email ,address, image ,nic   FROM user WHERE user_id = ? `,
       [data.user_id],
       (error, results, fields) => {
         if (error) {
@@ -153,12 +153,11 @@ module.exports = {
             console.log("delete employee error :", error);
             return callBack(error);
           } else {
-        
             if (results1[0].managerCount == 1) {
               return callBack(null, {
                 status: "Delete Fails!",
-                message: "Managaer deletion was unable to complete. Because there should be at least one manager",
-
+                message:
+                  "Managaer deletion was unable to complete. Because there should be at least one manager",
               });
             } else {
               pool.query(
@@ -171,7 +170,7 @@ module.exports = {
                   }
                   return callBack(null, {
                     status: "Successfuly Deleted!",
-                    message: "Manager Successfuly Deleted!"
+                    message: "Manager Successfuly Deleted!",
                   });
                 }
               );
@@ -199,7 +198,8 @@ module.exports = {
                   if (results1.length > 0) {
                     return callBack(null, {
                       status: "Delete Fails!",
-                      message: "Coach deletion was unable to complete. Because this coach is assigned to upcommeing practice session and matches",
+                      message:
+                        "Coach deletion was unable to complete. Because this coach is assigned to upcommeing practice session and matches",
                       resultsForMatch: results2,
                       resultsFOrSessions: results1,
                     });
@@ -214,7 +214,7 @@ module.exports = {
                         }
                         return callBack(null, {
                           status: "Successfuly Deleted!",
-                          message: "Coach Successfuly Deleted!"
+                          message: "Coach Successfuly Deleted!",
                         });
                       }
                     );
@@ -226,28 +226,26 @@ module.exports = {
         }
       );
     }
-    
   },
 
-//   updateEmployee: (data, callBack) => {
-//     pool.query(
-// <<<<<<< HEAD
-//       "UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?",
-//       [data.e_mail, data.contact, data.address, data.image, data.user_id],
-// =======
-//       `DELETE FROM user WHERE user_id = ?`,
-//       [data.user_id],
-// >>>>>>> bbe4bedd093771f481b4f344c95666b2f5ef300b
-//       (error, results, fields) => {
-//         if (error) {
-//           console.log("delete employee error :", error);
-//           return callBack(error);
-//         }
-//         return callBack(null, results);
-//       }
-//     );
-//   },
-
+  //   updateEmployee: (data, callBack) => {
+  //     pool.query(
+  // <<<<<<< HEAD
+  //       "UPDATE user SET email = ? , contact = ? , address = ? , image = ? WHERE user_id = ?",
+  //       [data.e_mail, data.contact, data.address, data.image, data.user_id],
+  // =======
+  //       `DELETE FROM user WHERE user_id = ?`,
+  //       [data.user_id],
+  // >>>>>>> bbe4bedd093771f481b4f344c95666b2f5ef300b
+  //       (error, results, fields) => {
+  //         if (error) {
+  //           console.log("delete employee error :", error);
+  //           return callBack(error);
+  //         }
+  //         return callBack(null, results);
+  //       }
+  //     );
+  //   },
 
   updateEmployee: (data, callBack) => {
     pool.query(
@@ -279,12 +277,7 @@ module.exports = {
     [
       pool.query(
         `INSERT INTO player (user_id,player_role,batting_style,bowling_style) VALUES (?,?,?,?)`,
-        [
-          data.user_id,
-          data.user_role,
-          data.batting_style,
-          data.bowling_style,
-        ],
+        [data.user_id, data.user_role, data.batting_style, data.bowling_style],
         (error, results, fields) => {
           if (error) {
             return callBack(error);
@@ -293,5 +286,87 @@ module.exports = {
         }
       ),
     ];
+  },
+  editPlayer: (data, callBack) => {
+    [
+      pool.query(
+        `SELECT COUNT(nic) AS nicCount FROM user WHERE user_id != ? AND nic= ?`,
+        [data.user_id, data.nic],
+        (error, results1, fields) => {
+          if (error) {
+            return callBack(error);
+          } else {
+            if (results1[0].nicCount > 0) {
+              return callBack(null, {
+                success: 0,
+                status: "Insert Fails!",
+                message: "Unable to update, NIC already used ",
+              });
+            } else {
+              pool.query(
+                ` SELECT COUNT(email) AS emailCount FROM user WHERE user_id != ? AND email= ? `,
+                [data.user_id, data.email],
+                (error, results2, fields) => {
+                  if (error) {
+                    return callBack(error);
+                  } else {
+                    if (results2[0].emailCount > 0) {
+                      return callBack(null, {
+                        success: 0,
+                        status: "Insert Fails!",
+                        message: "Unable to update, E-mail already used ",
+                      });
+                    } else {
+                      pool.query(
+                        `UPDATE user SET email = ? , contact = ? , address = ? , image = ?, nic = ?, gender = ? , dob=? WHERE user_id = ?`,
+                        [
+                          data.email,
+                          data.contact,
+                          data.address,
+                          data.image,
+                          data.nic,
+                          data.gender,
+                          data.dob,
+                          data.user_id,
+                        ],
+                        (error, results, fields) => {
+                          if (error) {
+                            return callBack(error);
+                          } else {
+                            return callBack(null, {
+                              success: 1,
+                              status: "Successfuly Add!",
+                              message: "User Update Successfull!",
+                            });
+                          }
+                        }
+                      );
+                    }
+                  }
+                }
+              );
+            }
+          }
+        }
+      ),
+    ];
+  },
+
+  deletePlayer: (data, callBack) => {
+    console.log(data);
+    pool.query(
+      `DELETE FROM user WHERE user_id = ? `,
+      [data.user_id],
+      (error, results, fields) => {
+        if (error) {
+          console.log("delete player error ; ", error);
+          return callBack(error);
+        }
+        return callBack(null, {
+          status: "Successfuly Deleted!",
+          message: "Player Successfuly Deleted!",
+        });
+      }
+    );
   },
 };

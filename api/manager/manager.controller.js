@@ -37,6 +37,7 @@ const {
   getFeedback,
   deleteSession,
   addPracticeMatch,
+  deleteMatchTitle,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -792,6 +793,21 @@ module.exports = {
           success: 0,
           message: "Database connection error",
           data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data: results,
+      });
+    })
+  },
+  DeleteMatchTitle: (req, res)=>{
+    const data = req.body;
+    deleteMatchTitle(data, (err,results) => {
+      if(err){
+        return res.json({
+          success: 0,
+          message: "Database connection error",
           err: err,
         });
       }

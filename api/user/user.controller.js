@@ -11,6 +11,8 @@ const {
   updateEmployee,
   getLastRow,
   playerDetail,
+  editPlayer,
+  deletePlayer,
 } = require("./user.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -140,9 +142,27 @@ module.exports = {
     });
   },
 
+  DeletePlayer:(req, res) => {
+    const data = req.body;
+    console.log(JSON.stringify(data) + "data")
+    deletePlayer(data, (error, results) => {
+      if(error){
+        return res.status(500).json({
+          success:0,
+          message: "Database Connection Error",
+          data:body,
+          err:error,
+        });
+      }
+      return res.status(200).json({
+        result:results,
+      });
+    });
+  },
+
   UpdateEmployee: (req, res) => {
     const data = req.body;
-    updateEmployee(data, (error, results) => {
+    editPlayer(data, (error, results) => {
       if (error) {
         console.log("error :::::: ", error.sqlMessage);
 
@@ -171,7 +191,7 @@ module.exports = {
           err: error.sqlMessage,
         });
       }
-      getLastRow(data, (err0r, results) => {
+      getLastRow(data, (error, results) => {
         if (error) {
           console.log("sql error : ", error.sqlMessage);
 
@@ -204,6 +224,8 @@ module.exports = {
       });
     });
   },
+
+
 };
 
 // fixed error and get right error message

@@ -217,7 +217,7 @@ module.exports = {
   },
   selectPaidPlayer: (callBack) => {
     pool.query(
-      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ? AND user.status = 1`,
+      `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image, payment.date FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ? AND user.status = 1 AND payment.year=2022`,
 
       ["player"],
       (error, results, fields) => {
@@ -231,11 +231,10 @@ module.exports = {
   },
   selectUnpaidPlayer: (callBack) => {
     pool.query(
-      // `SELECT user.user_id, payment.total_amount, user.name,user.role, user.image FROM payment INNER JOIN user ON payment.user_id = user.user_id WHERE user.role = ?`,
-      // `SELECT user.user_id, payment.payment_id FROM payment FULL JOIN user ON payment.user_id = user.user_id WHERE user.role = ? `,
+     
       `SELECT name , user_id, role, image
-            FROM user
-            WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id)`,
+      FROM user
+      WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id AND year != 2022 )`,
       [],
       (error, results, fields) => {
         if (error) {
@@ -580,6 +579,16 @@ module.exports = {
       }
       return callBack(null, results);
     });
+  },
+
+  deleteMatchTitle: (data,callBack)=>{
+    pool.query(`DELETE FROM  match_title WHERE title = ?`,[data.match_title],
+    (error, results, fields) => {
+      if(error) {
+        return callBack(error)
+      }
+      return callBack(null, results)
+    })
   },
 
   deleteMatch: (data, callBack) => {
