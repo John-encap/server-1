@@ -181,6 +181,8 @@ module.exports = {
   },
   PlayerRegistration: (req, res) => {
     const data = req.body;
+    // console.log("CREATE : "+ data)
+    const player_role = data.user_role
     create(data, (error, results) => {
       if (error) {
         console.log("sql error : ", error.sqlMessage);
@@ -203,7 +205,8 @@ module.exports = {
         }
         console.log(results[0].user_id);
         data.user_id = results[0].user_id;
-        console.log(data)
+        data.user_role = player_role
+        console.dir(data)
         playerDetail(data,(error,results)=>{
           if (error) {
             console.log("sql error : ", error.sqlMessage);

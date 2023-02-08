@@ -39,6 +39,7 @@ const {
   DeleteSession,
   DeleteEvent,
   DeleteMatchTitle,
+  DeleteAchievement,
 } = require("./manager.controller");
 // const { addAchivement } = require("./manager.service");
 
@@ -82,6 +83,7 @@ router.get("/getFeedback", GetFeedback);
 router.post("/deleteSession",DeleteSession);
 router.post("/deleteEvent",DeleteEvent)
 router.post("/deleteMatchTitle",DeleteMatchTitle)
+router.post('/deleteachievement',DeleteAchievement)
 
 module.exports = router;
 

@@ -688,5 +688,17 @@ module.exports = {
         }
       }
     );
+  },
+  deleteAchievement: (data,callBack)=>{
+    pool.query(
+      `DELETE FROM achievement WHERE a_id = ?`,
+      [data.a_id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
   }
 };
