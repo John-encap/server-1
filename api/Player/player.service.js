@@ -224,8 +224,8 @@ module.exports = {
     GetRanking: (catagory,format,callBack) =>{
         console.log(catagory+format)
         pool.query(
-            `SELECT user.name,user.image,player_play_matches.user_id, SUM(player_play_matches.runs) AS sumRuns , COUNT(player_play_matches.match_id) AS numMatches , SUM(player_play_matches.no_of_balls_faced) AS sumBalls, SUM(player_play_matches.b_no_of_overs) AS overs , SUM(player_play_matches.b_runs) AS b_runs , SUM(player_play_matches.b_wkts) AS b_wkts , SUM(player_play_matches.b_maiden_overs) AS m_overs , SUM(player_play_matches.b_htricks) AS b_htricks,SUM(player_play_matches.b_wide_balls) AS b_wide_balls,SUM(player_play_matches.b_no_balls) AS b_no_balls,SUM(player_play_matches.sixes) AS sixes,SUM(player_play_matches.fours) AS fours,SUM(player_play_matches.field_runout) AS field_runout,SUM(player_play_matches.no_of_catches) AS no_of_catches   FROM player_play_matches INNER JOIN user ON  player_play_matches.user_id=user.user_id WHERE played=? AND format=? GROUP BY user_id`,
-            [1,format],
+            `SELECT user.name,user.image,player_play_matches.user_id, SUM(player_play_matches.runs) AS sumRuns , COUNT(player_play_matches.match_id) AS numMatches , SUM(player_play_matches.no_of_balls_faced) AS sumBalls, SUM(player_play_matches.b_no_of_overs) AS overs , SUM(player_play_matches.b_runs) AS b_runs , SUM(player_play_matches.b_wkts) AS b_wkts , SUM(player_play_matches.b_maiden_overs) AS m_overs , SUM(player_play_matches.b_htricks) AS b_htricks,SUM(player_play_matches.b_wide_balls) AS b_wide_balls,SUM(player_play_matches.b_no_balls) AS b_no_balls,SUM(player_play_matches.sixes) AS sixes,SUM(player_play_matches.fours) AS fours,SUM(player_play_matches.field_runout) AS field_runout,SUM(player_play_matches.no_of_catches) AS no_of_catches   FROM player_play_matches INNER JOIN user ON  player_play_matches.user_id=user.user_id WHERE played=? AND format=?  GROUP BY user_id having  SUM(player_play_matches.b_no_of_overs)>? or SUM(player_play_matches.no_of_balls_faced)>?`,
+            [1,format,0,0],
              
             (error,results,fields)=>{
                 if(error){
@@ -233,12 +233,21 @@ module.exports = {
                 }
 
                 for(i=0;i<results.length;i++){
-                    results[i]['avg']=(results[i].sumRuns/results[i].numMatches).toFixed(2)
-                    results[i]['sr']=((results[i].sumRuns/results[i].sumBalls)*100).toFixed(2)
-                    results[i]['rating']=parseInt((results[i]['sixes']+results[i]['fours']+results[i]['avg']*7+results[i]['sr']*3)*2/results[i].numMatches,10)
-                    results[i]['econ']= (results[i]['b_runs']/results[i]['overs']).toFixed(2)
-                    results[i]['B_rating'] = parseInt((3000/results[i]['econ'])+results[i]['b_htricks']*10+results[i]['m_overs']*2+results[i]['b_wkts'],10)
-                    results[i]['A_rating'] = parseInt((results[i]['rating'] + results[i]['B_rating'])/2+results[i]['no_of_catches']+results[i]['field_runout'],10)
+                    if(results[i].sumBalls>0 || results[i]['overs']>0){
+                        if(results[i].sumBalls>0){
+                            results[i]['avg']=(results[i].sumRuns/results[i].numMatches).toFixed(2)
+                            results[i]['sr']=((results[i].sumRuns/results[i].sumBalls)*100).toFixed(2)
+                            results[i]['rating']=parseInt((results[i]['sixes']+results[i]['fours']+results[i]['avg']*7+results[i]['sr']*3)*2/results[i].numMatches,10)
+                        }
+                        if(results[i]['overs']>0 && results[i]['b_wkts']>0){
+                            results[i]['econ']= (results[i]['b_runs']/results[i]['overs']).toFixed(2)
+                            results[i]['B_rating'] = parseInt((500/results[i]['econ'])+results[i]['b_htricks']*5+results[i]['m_overs']*2+(results[i]['b_wkts'])*10,10)
+                        
+                        }
+                        if(results[i].sumBalls>0 && results[i]['overs']>0){
+                            results[i]['A_rating'] = parseInt((results[i]['rating'] + results[i]['B_rating'])/2+results[i]['no_of_catches']+results[i]['field_runout'],10)
+                        }
+                    }
                     // results[i]['econ']=6.23
                     // results[i]['B_rating']=507
                     // results[i]['A_rating']=603
@@ -551,10 +560,34 @@ module.exports = {
         var yyyy = today.getFullYear();
 
         today = yyyy + '-' + mm + '-' + dd;
-        console.log(today)
+        console.log("hii")
         pool.query(
             `SELECT op_team_name,match_format,date,ground,match_id FROM matches WHERE date > ? AND team_id=? ORDER BY matches.date ASC`,
             [today,0],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    addTeamToMatches:(match_id,callBack) =>{
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+        console.log("hii")
+        pool.query(
+            `UPDATE matches SET team_id=0 WHERE match_id=?`,
+            [31],
              
             (error,results,fields)=>{
                 if(error){ 
