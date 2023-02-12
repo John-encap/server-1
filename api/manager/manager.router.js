@@ -40,6 +40,8 @@ const {
   DeleteEvent,
   DeleteMatchTitle,
   DeleteAchievement,
+  UpdateFeedbackStatus,
+  GetOldFeedback,
 } = require("./manager.controller");
 // const { addAchivement } = require("./manager.service");
 
@@ -80,10 +82,12 @@ router.post("/addYearMembership",AddYearMembership);
 router.get("/getLastRow",GetLastRow);
 router.post("/findPaid",FindPaid);
 router.get("/getFeedback", GetFeedback);
+router.get("/getOldFeedback", GetOldFeedback);
 router.post("/deleteSession",DeleteSession);
 router.post("/deleteEvent",DeleteEvent)
 router.post("/deleteMatchTitle",DeleteMatchTitle)
 router.post('/deleteachievement',DeleteAchievement)
+router.post('/updateFeedbackStatus',UpdateFeedbackStatus)
 
 module.exports = router;
 

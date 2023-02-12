@@ -39,6 +39,8 @@ const {
   addPracticeMatch,
   deleteMatchTitle,
   deleteAchievement,
+  updateFeedbackStatus,
+  getOldFeedback,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -60,9 +62,7 @@ module.exports = {
           err: err,
         });
       }
-      // return res.json({
-      // success:1,
-      // resData : results,
+    
       lengthed = Object.values(Object.values(Object.keys(results))).length;
 
       if (lengthed == 0) {
@@ -754,6 +754,38 @@ module.exports = {
   },
   GetFeedback: (req, res) =>{
     getFeedback((err, results) => {
+      if(err){
+        console.log("get feedback error : ",err);
+        return res.json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
+      });
+    });
+  },
+  UpdateFeedbackStatus: (req,res)=>{
+    const data = req.body;
+    updateFeedbackStatus(data, (err, results)=>{
+      if(err){
+        return res.json({
+          success:0,
+          message: "Database connection error",
+          data: body,
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
+      });
+    })
+  },
+  GetOldFeedback: (Req,res) => {
+    getOldFeedback((err, results) => {
       if(err){
         console.log("get feedback error : ",err);
         return res.json({

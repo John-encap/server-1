@@ -4,8 +4,6 @@ const pool = require("../../config/database");
 
 module.exports = {
   create: (data, callBack) => {
-  const img = data.image? data.image : 'https://firebasestorage.googleapis.com/v0/b/bloomfield-84518.appspot.com/o/images%2Fcricket.webp?alt=media&token=e3f1aa32-1b00-4957-ae6e-ff7e33881b24'
-
     pool.query(
       `INSERT INTO matches (match_format, ground, date, time, op_team_name,title,team_icon ) VALUES (?,?,?,?,?,?,?) `,
       [
@@ -15,7 +13,7 @@ module.exports = {
         data.time,
         data.op_team_name,
         data.title,
-        img
+        data.image,
       ],
       (error, results, fields) => {
         if (error) {
@@ -62,7 +60,6 @@ module.exports = {
     );
   },
   addPracticeMatch: (data, callBack) => {
-
     console.log(data);
     pool.query(
       `SELECT COUNT(date) as eventCount FROM events WHERE date = ?`,
@@ -96,7 +93,11 @@ module.exports = {
                         "Unable to insert, already have a match on " +
                         data.date,
                     });
-                  } else{
+                  } else {
+                    const img = data.team_icon
+                      ? data.team_icon
+                      : "https://firebasestorage.googleapis.com/v0/b/bloomfield-84518.appspot.com/o/images%2Fcricket.webp?alt=media&token=e3f1aa32-1b00-4957-ae6e-ff7e33881b24";
+
                     pool.query(
                       `INSERT INTO matches (match_format, ground, date, time, op_team_name,title,team_icon ) VALUES (?,?,?,?,?,?,?) `,
                       [
@@ -106,7 +107,7 @@ module.exports = {
                         data.time,
                         data.op_team_name,
                         data.title,
-                        data.team_icon,
+                        img
                       ],
                       (error, results, fields) => {
                         if (error) {
@@ -130,7 +131,6 @@ module.exports = {
     );
   },
   addSession: (data, callBack) => {
-
     console.log(data);
     pool.query(
       `SELECT COUNT(date) as eventCount FROM events WHERE date = ?`,
@@ -184,14 +184,14 @@ module.exports = {
                           } else {
                             pool.query(
                               `INSERT INTO counseling_session (date, time, mentor, mentor_details, title, place ) VALUES (?,?,?,?,?,?) `,
-                                [
-                                  data.date,
-                                  data.time,
-                                  data.mentor,
-                                  data.mentor_details,
-                                  data.title,
-                                  data.place,
-                                ],
+                              [
+                                data.date,
+                                data.time,
+                                data.mentor,
+                                data.mentor_details,
+                                data.title,
+                                data.place,
+                              ],
                               (error, results, fields) => {
                                 if (error) {
                                   return callBack(error);
@@ -233,7 +233,6 @@ module.exports = {
   },
   selectUnpaidPlayer: (callBack) => {
     pool.query(
-     
       `SELECT name , user_id, role, image
       FROM user
       WHERE NOT EXISTS (SELECT user_id FROM payment WHERE payment.user_id = user.user_id AND year != 2022 )`,
@@ -517,7 +516,7 @@ module.exports = {
     );
   },
 
-  deleteSession: (data,callBack)=>{
+  deleteSession: (data, callBack) => {
     pool.query(
       `DELETE FROM counseling_session WHERE c_session_id = ?`,
       [data.session_id],
@@ -583,14 +582,17 @@ module.exports = {
     });
   },
 
-  deleteMatchTitle: (data,callBack)=>{
-    pool.query(`DELETE FROM  match_title WHERE title = ?`,[data.match_title],
-    (error, results, fields) => {
-      if(error) {
-        return callBack(error)
+  deleteMatchTitle: (data, callBack) => {
+    pool.query(
+      `DELETE FROM  match_title WHERE title = ?`,
+      [data.match_title],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
       }
-      return callBack(null, results)
-    })
+    );
   },
 
   deleteMatch: (data, callBack) => {
@@ -678,20 +680,45 @@ module.exports = {
     );
   },
 
-  getFeedback: (callBack)=>{
+  getFeedback: (callBack) => {
     pool.query(
-      `SELECT club_feedback.feedback, club_feedback.date, user.name, user.role FROM club_feedback LEFT JOIN user ON club_feedback.user_id=user.user_id ORDER BY club_feedback.date DESC`,
+      `SELECT club_feedback.feedback_id, club_feedback.feedback, club_feedback.date, user.name, user.role FROM club_feedback LEFT JOIN user ON club_feedback.user_id=user.user_id WHERE club_feedback.checked=0 ORDER BY club_feedback.date DESC`,
       [],
-      (error,results,fields)=>{
-        if(error) {
+      (error, results, fields) => {
+        if (error) {
           return callBack(error);
-        }else{
-          return callBack(null,results);
+        } else {
+          return callBack(null, results);
         }
       }
     );
   },
-  deleteAchievement: (data,callBack)=>{
+  updateFeedbackStatus: (data, callBack) => {
+    pool.query(
+      `UPDATE club_feedback SET checked = 1 WHERE feedback_id = ?`,
+      [data.feedback_id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
+      }
+    );
+  },
+  getOldFeedback: (callBack) => {
+    pool.query(
+      `SELECT club_feedback.feedback_id, club_feedback.feedback, club_feedback.date, user.name, user.role FROM club_feedback LEFT JOIN user ON club_feedback.user_id=user.user_id WHERE club_feedback.checked=1 ORDER BY club_feedback.date DESC`,
+      [],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        } else {
+          return callBack(null, results);
+        }
+      }
+    );
+  },
+  deleteAchievement: (data, callBack) => {
     pool.query(
       `DELETE FROM achievement WHERE a_id = ?`,
       [data.a_id],
@@ -702,5 +729,5 @@ module.exports = {
         return callBack(null, results);
       }
     );
-  }
+  },
 };
