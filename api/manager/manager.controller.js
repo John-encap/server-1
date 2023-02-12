@@ -38,6 +38,7 @@ const {
   deleteSession,
   addPracticeMatch,
   deleteMatchTitle,
+  deleteAchievement,
 } = require("./manager.service");
 const { compareSync } = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -814,6 +815,21 @@ module.exports = {
       return res.json({
         data: results,
       });
+    })
+  },
+  DeleteAchievement:(req, res)=>{
+    const data  = req.body;
+    deleteAchievement(data, (err, results)=>{
+      if(err){
+        return res.json({
+          success: 0,
+          message: "Database connection error",
+          err: err,
+        });
+      }
+      return res.json({
+        data:results,
+      })
     })
   }
 

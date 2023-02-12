@@ -4,6 +4,8 @@ const pool = require("../../config/database");
 
 module.exports = {
   create: (data, callBack) => {
+  const img = data.image? data.image : 'https://firebasestorage.googleapis.com/v0/b/bloomfield-84518.appspot.com/o/images%2Fcricket.webp?alt=media&token=e3f1aa32-1b00-4957-ae6e-ff7e33881b24'
+
     pool.query(
       `INSERT INTO matches (match_format, ground, date, time, op_team_name,title,team_icon ) VALUES (?,?,?,?,?,?,?) `,
       [
@@ -13,7 +15,7 @@ module.exports = {
         data.time,
         data.op_team_name,
         data.title,
-        data.image,
+        img
       ],
       (error, results, fields) => {
         if (error) {
@@ -113,7 +115,7 @@ module.exports = {
                           return callBack(null, {
                             success: 1,
                             status: "Successfuly Add!",
-                            message: "Session Successfuly Added!",
+                            message: "Match Successfuly Added!",
                           });
                         }
                       }
@@ -686,6 +688,18 @@ module.exports = {
         }else{
           return callBack(null,results);
         }
+      }
+    );
+  },
+  deleteAchievement: (data,callBack)=>{
+    pool.query(
+      `DELETE FROM achievement WHERE a_id = ?`,
+      [data.a_id],
+      (error, results, fields) => {
+        if (error) {
+          return callBack(error);
+        }
+        return callBack(null, results);
       }
     );
   }
