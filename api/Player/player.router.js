@@ -1,4 +1,4 @@
-const {GetSessions,GetSessionPlayers,score_update,GetSessionCoach,getDataforValidation,check_op_score,matchPlayerBowl,deleteNewses,updatescore_notP,unmarked_players_marked,SpecSessionDetails,getPlayersToSessions,GetSessionss,getAllPlayersFS,checkAvailabilityForSession ,match,GetMatchPlayerss,update,Unmarked,updatescore,unmarked_players,marked,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
+const {GetSessions,GetSessionPlayers,score_update,addTeamToMatches,GetSessionCoach,getDataforValidation,check_op_score,matchPlayerBowl,deleteNewses,updatescore_notP,unmarked_players_marked,SpecSessionDetails,getPlayersToSessions,GetSessionss,getAllPlayersFS,checkAvailabilityForSession ,match,GetMatchPlayerss,update,Unmarked,updatescore,unmarked_players,marked,getTeam,unmarked_data,addTeamMatches,future,addTeam,addTeamMatchesDet,getTeamDetails,deleteTeam,CreateTeam,getAllPlayers,Attendance,feedback,performanceBowl,intro,performanceFld,performance,GetEvents,GetCouncelling,GetEventDetails,GetPayments,GetMatchCoach,GetMatchPlayers,GetRanking} = require("./player.controller");
 const router = require("express").Router();
 
 router.post("/match", match);
@@ -26,6 +26,7 @@ router.post("/coach/CreateTeam", CreateTeam);
 router.post("/coach/getTeam", getTeam); 
 router.post("/coach/getTeamDetails", getTeamDetails);
 router.post("/coach/deleteTeam", deleteTeam);
+router.post("/coach/addTeamToMatch", addTeamToMatches);
 router.post("/coach/addTeamMatches", addTeamMatches);
 router.post("/coach/addTeamMatchesDet", addTeamMatchesDet);
 router.post("/coach/addTeam", addTeam);
