@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const {deleteFeedback, getFeedback, giveFeedback, GetSessions,GetSessionPlayers,GetSessionCoach,getDataforValidation,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+=======
+const {GetSessions,GetSessionPlayers,GetSessionCoach,getDataforValidation,addTeamToMatches,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+>>>>>>> 2c94a255627692befad44da009dbad59b97d666d
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
 const joi = require("@hapi/joi");
@@ -805,6 +809,32 @@ module.exports = {
     },
     deleteTeam: (req,res) =>{ 
         deleteTeam(req.body.team_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    addTeamToMatches: (req,res) =>{ 
+        addTeamToMatches(req.body.match_id,(err,results)=>{
             
             if(err) {
                 console.log(err);

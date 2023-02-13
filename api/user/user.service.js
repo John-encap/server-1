@@ -9,7 +9,7 @@ module.exports = {
     const password = hashSync(data.nic, salt);
     if (
       data.user_role == "bawler" ||
-      data.user_role == "battsman" ||
+      data.user_role == "batsman" ||
       data.user_role == "allrounder"
     ) {
       data.user_role = "player";
@@ -362,11 +362,24 @@ module.exports = {
           console.log("delete player error ; ", error);
           return callBack(error);
         }
-        return callBack(null, {
-          status: "Successfuly Deleted!",
-          message: "Player Successfuly Deleted!",
-        });
+        else{
+          pool.query(
+            `DELETE FROM player WHERE user_id = ? `,
+            [data.user_id],
+            (error, results, fields) => {
+              if (error) {
+                console.log("delete player error ; ", error);
+                return callBack(error);
+              }
+              return callBack(null, {
+                status: "Successfuly Deleted!",
+                message: "Player Successfuly Deleted!",
+              });
+            }
+          );
+        }
       }
     );
+    
   },
 };
