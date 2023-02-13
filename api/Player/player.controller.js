@@ -1,7 +1,143 @@
-const {GetSessions,GetSessionPlayers,GetSessionCoach,getDataforValidation,addTeamToMatches,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {deleteFeedback, getFeedback, giveFeedback, GetSessions,GetSessionPlayers,GetSessionCoach,getDataforValidation,addTeamToMatches,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
+const joi = require("@hapi/joi");
+
+const add_feedback = joi.object().keys({
+    date: joi.string().required(),
+    feedback: joi.string().required(),
+    player_id: joi.number().integer().required()
+});
+
 module.exports = {
+
+    deleteFeedback: (req, res) => {
+        const f_id = req.body.id;
+
+        deleteFeedback (f_id, (err, results) => {
+            if(err) {
+                return res.json({
+                    success: 0,
+                    error: err
+                })
+            }
+
+            if(!results){
+                return res.json({
+                    success: 0,
+                    error: "Error of delete feedback",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results
+                    }); 
+                }
+                
+            }
+        });
+    },
+
+    getFeedback: (req, res) => {
+
+        const player_id = req.body.player_id;
+
+        getFeedback (player_id, (err, results) => {
+
+            if(err) {
+                return res.json({
+                    success: 0,
+                    error: err
+                })
+            }
+
+            if(!results){
+                return res.json({
+                    success: 0,
+                    error: "Error of retrieve feedbacks",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results
+                    }); 
+                }
+                
+            }
+
+        });
+    },
+
+    giveFeedback: (req, res) => {
+
+        const body = req.body;
+
+        const { error } = add_feedback.validate(body);
+
+        if (error) {
+            return res.json({
+                success: 0,
+                error: error 
+            })
+        }
+
+        giveFeedback(body, (err, results) => {
+            if(err) {
+                return res.json({
+                    success: 0,
+                    error: err
+                })
+            }
+
+            if(!results){
+                return res.json({
+                    success: 0,
+                    error: "Not added feedback",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: "Successfully added feedback",
+                    }); 
+                }
+                
+            }
+
+        });
+    },
+
+    AllTeamA: (req, res) => {//db wens karapn
+        const body = req.body;
+        allTeamA((err, results) => {
+            if(err) {
+                return res.json({ error: err });
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no team achievements",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+
+    },
+
     //get session details for payers
     GetSessions: (req,res) =>{
         const body = req.body;
@@ -1127,8 +1263,11 @@ module.exports = {
         });
         
     },
+    
     SpecSessionDetails:(req,res) =>{ 
+
         const id=req.body.id
+
         SpecSessionDetails(id,(err,results)=>{
             
             if(err) {
@@ -1138,7 +1277,6 @@ module.exports = {
             else{
                 
                 if(results){
-                    // console.log(results)
                     return res.json(results);
                 }
                 

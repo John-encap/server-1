@@ -1,5 +1,6 @@
-const {getSessionToday, getSessionAll, checkDateTimePracticeSession, addDateTime, getPlayers,getOldSession, getCoaches,upCommingSessions, getAssignedPlayers, getAssignedCoaches, markSessionAttendance, allTeamA, pastAndMark, checkEventExist, checkMatchExist, checkSessionExist} = require("./coach.service");
+const {getSessionToday, getSessionAll, checkDateTimePracticeSession, addDateTime, getPlayers,getOldSession, getCoaches,upCommingSessions, getAssignedPlayers, getAssignedCoaches, markSessionAttendance, allTeamA, pastAndMark, checkEventExist, checkMatchExist, checkSessionExist, markAttendance, getOldMarkedSession} = require("./coach.service");
 
+const { mark_practice_session_attendance } = require("./coach_models");
 
 module.exports = {
 
@@ -325,6 +326,37 @@ module.exports = {
         });
     },
 
+    markAttendance: (req, res) => {
+
+        const { error } = mark_practice_session_attendance.validate(req.body);
+
+        if (error) return res.json({ error: error.details[0].message })
+
+        const data = req.body;
+
+        markAttendance(data, (err, result) => {
+            if (err) {
+                res.json({
+                    error: err
+                })
+            }
+
+            if (!result) {
+                res.json({
+                    error: "something went wrong"
+                })
+            }
+            else {
+                if (result) {
+                    res.json({
+                        data: "successfully recorded attendance"
+                    })
+                }
+            }
+        })
+
+    },
+
     PastAndMark: (req, res) => {
         pastAndMark((err, results) => {
             if(err) {
@@ -425,10 +457,11 @@ module.exports = {
           }
         });
       },
+      
       getOldSession: (req, res) => {
         const id = req.body.user_id;
         const date = req.body.date;
-        console.log(req.body)
+        
         getOldSession(id,date,(err, results) => {
             if(err) {
                 console.log(err);
@@ -451,10 +484,37 @@ module.exports = {
             }
         });
     },
+
+    getOldMarkedSession: (req, res) => {
+        const id = req.body.user_id;
+        const date = req.body.date;
+        
+        getOldMarkedSession(id,date,(err, results) => {
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(!results){
+                return res.json({
+                    success: 0,
+                    data: "no coaches",
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    }); 
+                }
+                
+            }
+        });
+    },
+
     upCommingSessions: (req, res) => {
         const id = req.body.user_id;
         const date = req.body.date;
-        console.log(req.body)
         upCommingSessions(id,date,(err, results) => {
             if(err) {
                 console.log(err);

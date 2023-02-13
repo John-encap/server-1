@@ -4,7 +4,50 @@ const pool=require("../../config/database");
 function getCouchSessions(id){
     console.log(id)
 }
+
 module.exports = {
+
+    deleteFeedback: (f_id, callBack) => {
+        pool.query(
+            `DELETE FROM club_feedback WHERE feedback_id = ?`,
+            [f_id], 
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+
+    getFeedback: (player_id, callBack) => {
+        pool.query(
+            `SELECT * FROM club_feedback WHERE user_id = ?`,
+            [player_id],
+             
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null,results); 
+            }
+        )
+    },
+
+    giveFeedback: (body, callBack) => {
+        pool.query(
+            `INSERT INTO club_feedback (feedback_id, feedback, date, user_id)
+            VALUES (Null, ?)`,
+            [[body.feedback, body.date, body.player_id]],
+            (error,results,fields)=>{
+                if(error){
+                    return callBack(error);
+                }
+                return callBack(null, results); 
+            }
+        )
+    },
+
     // Get Batting performance for player 
     GetBattingPerformance: (email,callBack) =>{
         pool.query(
@@ -1203,7 +1246,7 @@ module.exports = {
                 else{
                     console.log(result1)
                     pool.query(
-                        `SELECT player_practice_session.user_id, user.name FROM player_practice_session INNER JOIN user ON player_practice_session.user_id=user.user_id WHERE player_practice_session.session_id=?`,
+                        `SELECT player_practice_session.user_id, player_practice_session.marked_status, user.name FROM player_practice_session INNER JOIN user ON player_practice_session.user_id=user.user_id WHERE player_practice_session.session_id=?`,
                         [id],
                          
                         (error,results2,fields)=>{
