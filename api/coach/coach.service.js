@@ -241,20 +241,43 @@ module.exports = {
     //     )
     //   },
       getOldSession:(user_id,date, callBack) => {
+
+        // `SELECT * FROM practice_sessions WHERE user_id=? AND date < ? ORDER BY practice_sessions.date DESC`
         
         pool.query(
-            `SELECT * FROM practice_sessions WHERE user_id=? AND date < ? ORDER BY practice_sessions.date DESC`,
-          [user_id,date],
+          `SELECT DISTINCT practice_sessions.session_id, practice_sessions.type, practice_sessions.user_id, practice_sessions.time, practice_sessions.date, practice_sessions.end_time FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id = player_practice_session.session_id WHERE practice_sessions.user_id = ? AND practice_sessions.date < ? AND player_practice_session.marked_status = ?`,
+          [user_id,date,0],
           (error, results, fields) => {
             if (error) {
               console.log("get match error : ", error);
               return callBack(error);
             }
-            console.log(results)
             return callBack(null, results);
+
           }
         )
       },
+
+      getOldMarkedSession:(user_id,date, callBack) => {
+
+        console.log(user_id)
+
+        // `SELECT * FROM practice_sessions WHERE user_id=? AND date < ? ORDER BY practice_sessions.date DESC`
+        
+        pool.query(
+          `SELECT DISTINCT practice_sessions.session_id, practice_sessions.type, practice_sessions.user_id, practice_sessions.time, practice_sessions.date, practice_sessions.end_time FROM practice_sessions INNER JOIN player_practice_session ON practice_sessions.session_id = player_practice_session.session_id WHERE practice_sessions.user_id = ? AND practice_sessions.date < ? AND player_practice_session.marked_status = ? AND player_practice_session.marked_status != ? GROUP BY practice_sessions.session_id HAVING COUNT(player_practice_session.user_id) = SUM(player_practice_session.marked_status)`,
+          [user_id,date,1, 0],
+          (error, results, fields) => {
+            if (error) {
+              console.log("get match error : ", error);
+              return callBack(error);
+            }
+            return callBack(null, results);
+
+          }
+        )
+      },
+      
       upCommingSessions:(user_id,date, callBack) => {
         
         pool.query(
@@ -267,6 +290,22 @@ module.exports = {
             }
             console.log(results)
             return callBack(null, results);
+          }
+        )
+      },
+
+      markAttendance: (data, callBack) => {
+        pool.query(
+          "UPDATE player_practice_session SET batting_shotes = ?, attendance = ?, feedback = ?, marked_status = ? WHERE session_id = ? AND user_id = ?",
+          [data.session_description, data.attendance, data.feedback, 1, data.match_id, data.id],
+          (error, results, fields) => {
+
+            if (error) {
+              return callBack(error);
+            }
+
+            return callBack(null, results);
+
           }
         )
       },
