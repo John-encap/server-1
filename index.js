@@ -1,5 +1,11 @@
 const express = require ('express');
 const app = express();
+app.use(express.json());
+
+
+const commonRouter = require("./api/userFRPassword/route/forgotPassword_route");
+
+app.use("/api/common", commonRouter);
 
 
 app.use(function(req, res, next) {
@@ -18,14 +24,11 @@ const managerRouter = require("./api/manager/manager.router");
 const coachRouter = require("./api/coach/coach.router");
 
 
-app.use(express.json());
-
 app.use("/api/user", userRouter);
 app.use("/api/player", playerRouter);
 app.use("/api/match", matchRouter);
 app.use("/api/manager" , managerRouter);
 app.use("/api/coach" , coachRouter);
-
 
 
 app.listen(process.env.APP_PORT, () => {

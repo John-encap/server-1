@@ -1,4 +1,4 @@
-const {GetPSessionToday, GetPSessionAll, AddDateTime, GetPlayers, GetCoaches,getOldSession,upCommingSessions, GetAssignedPlayers, GetAssignedCoaches, MarkSessionAttendance, AllTeamA, PastAndMark} = require("./coach.controller");
+const {GetPSessionToday, GetPSessionAll, AddDateTime, GetPlayers, GetCoaches,getOldSession,upCommingSessions, GetAssignedPlayers, GetAssignedCoaches, MarkSessionAttendance, AllTeamA, PastAndMark, markAttendance, getOldMarkedSession} = require("./coach.controller");
 const router = require("express").Router();
 
 
@@ -24,11 +24,12 @@ router.get("/Achievements/AllTeamA", AllTeamA);//db wens karapn
 //Matches
 router.get("/Matches/PastAndMark", PastAndMark);
 router.post("/getOldSession", getOldSession);
+router.post("/getOldCompletedMarkedSessions", getOldMarkedSession);
 router.post("/upCommingSessions", upCommingSessions);
 
+//mark session attendance and feedbacks
 
-
-
+router.post("/markPracticeSessionAttendance", markAttendance);
 
 
 module.exports = router;
