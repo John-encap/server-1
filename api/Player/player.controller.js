@@ -1,5 +1,5 @@
 
-const {deleteFeedback, getFeedback, giveFeedback, GetSessions,GetSessionPlayers,GetSessionCoach,getDataforValidation,getPlayerScoreInd,addTeamToMatches,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking} =require("./player.service");
+const {getUppcomingSessionPlayerList,deleteFeedback, getFeedback, giveFeedback, GetSessions,GetSessionPlayers,detailsForBeforeTeamAdd,GetSessionCoach,getDataforValidation,getPlayerScoreInd,addTeamToMatches,getAllPlayersFS,matchPlayerBowl,score_update,updatescore_notP,check_op_score,unmarked_players_marked,getPlayersToSessions,checkAvailabilityForSession,SpecSessionDetails,match,deleteNewses,GetSessionss,CreateTeam,GetMatchPlayerss,future,update,unmarked_data,marked,unmarked_players,updatescore,Unmarked,addTeam,getTeam,addTeamMatches,addTeamMatchesDet,getTeamDetails,deleteTeam,performanceBowl,getAllPlayers,feedback,Attendance,intro,performanceFld,GetCouncelling,GetEvents,performance,GetEventDetails,GetPayments,GetMatchPlayers,GetMatchCoach,GetRanking,getUppcomingSession} =require("./player.service");
 
 const {compareSync}=require("bcrypt");
 const jwt =require("jsonwebtoken");
@@ -885,7 +885,35 @@ module.exports = {
         
     },
     addTeamMatchesDet: (req,res) =>{ 
+        // console.log("mmm"+req.body.match_id)
         addTeamMatchesDet(req.body.match_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            if(results[0]==undefined){
+                return res.json({
+                    success: 0,
+                    data: results,
+                });
+            }
+            else{
+                if(results){
+                    return res.json({
+                        success: 1,
+                        data: results,
+                    });
+                }
+                
+            }
+            
+        });
+        
+    },
+    detailsForBeforeTeamAdd: (req,res) =>{ 
+        console.log("mmm"+req.body.match_id)
+        detailsForBeforeTeamAdd(req.body.match_id,(err,results)=>{
             
             if(err) {
                 console.log(err);
@@ -1372,6 +1400,46 @@ module.exports = {
     getPlayerScoreInd:(req,res) =>{ 
         console.log(req.body)
         getPlayerScoreInd(req.body.match_id,req.body.user_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    // console.log(results)
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    getUppcomingSession:(req,res) =>{ 
+        // console.log(req.body)
+        getUppcomingSession(req.body.session_id,(err,results)=>{
+            
+            if(err) {
+                console.log(err);
+                return
+            }
+            else{
+                
+                if(results){
+                    // console.log(results)
+                    return res.json(results);
+                }
+                
+            }
+            
+        });
+        
+    },
+    getUppcomingSessionPlayerList:(req,res) =>{ 
+        // console.log(req.body)
+        getUppcomingSessionPlayerList(req.body.session_id,(err,results)=>{
             
             if(err) {
                 console.log(err);

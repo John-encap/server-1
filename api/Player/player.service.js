@@ -671,6 +671,7 @@ module.exports = {
         
     },
     addTeamMatchesDet:(id,callBack) =>{
+        // console.log("bhbn"+id)
         pool.query(
             `SELECT matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id,matches.team_id ,team.name FROM matches INNER JOIN team ON matches.team_id=team.team_id WHERE matches.match_id=? `,
             [id],
@@ -679,7 +680,25 @@ module.exports = {
                 if(error){ 
                     return callBack(error);
                 }
-                console.log(results)
+                // console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    detailsForBeforeTeamAdd:(id,callBack)=>{
+        console.log("bhbn"+id)
+        pool.query(
+            `SELECT * FROM matches WHERE match_id=? `,
+            [id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                // console.log(results)
                 return callBack(null,results);
 
             }
@@ -1337,6 +1356,44 @@ module.exports = {
                     return callBack(error);
                 }
                 console.log(match_id)
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    getUppcomingSession:(session_id,callBack) =>{
+        console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT practice_sessions.type,practice_sessions.date,practice_sessions.time,practice_sessions.end_time, user.name FROM practice_sessions INNER JOIN user ON practice_sessions.user_id=user.user_id WHERE session_id=?`,
+            [session_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(session_id)
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    getUppcomingSessionPlayerList:(session_id,callBack) =>{
+        console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT user.user_id,user.name FROM player_practice_session INNER JOIN user ON user.user_id=player_practice_session.user_id WHERE player_practice_session.session_id=?`,
+            [session_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(session_id)
                 console.log(results)
                 return callBack(null,results);
 
