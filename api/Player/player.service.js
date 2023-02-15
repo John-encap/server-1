@@ -36,9 +36,9 @@ module.exports = {
 
     giveFeedback: (body, callBack) => {
         pool.query(
-            `INSERT INTO club_feedback (feedback_id, feedback, date, user_id)
-            VALUES (Null, ?)`,
-            [[body.feedback, body.date, body.player_id]],
+            `INSERT INTO club_feedback ( feedback, date, user_id)
+            VALUES (?,?,?)`,
+            [body.feedback, body.date, body.player_id],
             (error,results,fields)=>{
                 if(error){
                     return callBack(error);

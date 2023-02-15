@@ -100,6 +100,13 @@ module.exports = {
             token: accessToken,
           });
         }
+        else{
+          return res.json({
+            success: 0,
+            data: 'Invalid username or password',
+            
+          });
+        }
       }
     });
   },
