@@ -307,8 +307,8 @@ module.exports = {
 
     performanceBowl: (user_id,callBack) =>{
         pool.query(
-            `SELECT format,COUNT(match_id) AS M,COUNT(IF(played=1,match_id,NULL)) AS Inn, SUM(b_no_of_overs) AS overs, SUM(b_runs) AS Runs, SUM(b_wkts) AS wkts,b_runs AS econ ,COUNT(IF(b_wkts>=3 AND b_wkts<=5,match_id,NULL)) AS 3W,COUNT(IF(b_wkts>=5,match_id,NULL)) AS 5W,SUM(b_htricks) AS Hatricks,SUM(b_maiden_overs) AS maiden,SUM(b_wide_balls) AS WB,SUM(b_no_balls) AS NB FROM player_play_matches WHERE played=? AND user_id=? GROUP BY format`,
-            [1,user_id],
+            `SELECT format,COUNT(match_id) AS M,COUNT(IF(played=1,match_id,NULL)) AS Inn, SUM(b_no_of_overs) AS overs, SUM(b_runs) AS Runs, SUM(b_wkts) AS wkts,b_runs AS econ ,COUNT(IF(b_wkts>=3 AND b_wkts<=5,match_id,NULL)) AS 3W,COUNT(IF(b_wkts>=5,match_id,NULL)) AS 5W,SUM(b_htricks) AS Hatricks,SUM(b_maiden_overs) AS maiden,SUM(b_wide_balls) AS WB,SUM(b_no_balls) AS NB FROM player_play_matches WHERE played=? AND user_id=? GROUP BY format HAVING SUM(b_no_of_overs)>?`,
+            [1,user_id,0],
              
             (error,results,fields)=>{
                 if(error){ 
@@ -316,6 +316,7 @@ module.exports = {
                 }
                 for(i=0;i<results.length;i++){
                     results[i].econ=((results[i].Runs)/results[i].overs).toFixed(2);
+                    results[i].overs=(results[i].overs).toFixed(0);
                 }
                 console.log(results)
                 return callBack(null,results);
@@ -328,8 +329,8 @@ module.exports = {
     
     performance: (user_id,callBack) =>{
         pool.query(
-            `SELECT format,COUNT(match_id) AS M,COUNT(IF(played=1,match_id,NULL)) AS Inn, SUM(no_of_balls_faced) AS NO, SUM(runs) AS Runs, MAX(runs) AS HS, AVG(runs) AS Avg,COUNT(IF(runs=0,match_id,NULL)) AS Ducks, runs AS SR,COUNT(IF(runs>=50 AND runs<100 ,match_id,NULL)) AS fifty,COUNT(IF(runs>=100 AND runs<200 ,match_id,NULL)) AS hunderd,COUNT(IF(runs>=200 ,match_id,NULL)) AS doubleH,SUM(fours) AS fours,SUM(sixes) AS sixes FROM player_play_matches WHERE played=? AND user_id=? GROUP BY format`,
-            [1,user_id],
+            `SELECT format,COUNT(match_id) AS M,COUNT(IF(played=1,match_id,NULL)) AS Inn, SUM(no_of_balls_faced) AS NO, SUM(runs) AS Runs, MAX(runs) AS HS, AVG(runs) AS Avg,COUNT(IF(runs=0,match_id,NULL)) AS Ducks, runs AS SR,COUNT(IF(runs>=50 AND runs<100 ,match_id,NULL)) AS fifty,COUNT(IF(runs>=100 AND runs<200 ,match_id,NULL)) AS hunderd,COUNT(IF(runs>=200 ,match_id,NULL)) AS doubleH,SUM(fours) AS fours,SUM(sixes) AS sixes FROM player_play_matches WHERE played=? AND user_id=? GROUP BY format HAVING SUM(no_of_balls_faced)>?`,
+            [1,user_id,0],
              
             (error,results,fields)=>{
                 if(error){ 
@@ -337,6 +338,7 @@ module.exports = {
                 }
                 for(i=0;i<results.length;i++){
                     results[i].SR=((results[i].Runs*100)/results[i].NO).toFixed(2);
+                    results[i].Avg=(results[i].Avg).toFixed(2);
                 }
                 console.log(results)
                 return callBack(null,results);
@@ -620,23 +622,23 @@ module.exports = {
         )
         
     },
-    addTeamToMatches:(match_id,callBack) =>{
+    addTeamToMatches:(match_id,team_id,callBack) =>{
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
 
         today = yyyy + '-' + mm + '-' + dd;
-        console.log("hii")
+        console.log("Service")
         pool.query(
-            `UPDATE matches SET team_id=0 WHERE match_id=?`,
-            [31],
+            `UPDATE matches SET team_id=? WHERE match_id=?`,
+            [team_id,match_id],
              
             (error,results,fields)=>{
                 if(error){ 
                     return callBack(error);
                 }
-                console.log(results)
+                // console.log(results)
                 return callBack(null,results);
 
             }
@@ -670,7 +672,7 @@ module.exports = {
     },
     addTeamMatchesDet:(id,callBack) =>{
         pool.query(
-            `SELECT matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id,matches.team_id  FROM matches  WHERE matches.match_id=? `,
+            `SELECT matches.op_team_name,matches.match_format,matches.date,matches.ground,matches.match_id,matches.team_id ,team.name FROM matches INNER JOIN team ON matches.team_id=team.team_id WHERE matches.match_id=? `,
             [id],
              
             (error,results,fields)=>{
@@ -1310,6 +1312,25 @@ module.exports = {
         pool.query(
             `SELECT SUM(b_no_of_overs) AS b_overs, SUM(b_wkts) AS wkts, format, SUM(no_of_balls_faced) AS balls_faced FROM player_play_matches WHERE match_id=?`,
             [match_id],
+             
+            (error,results,fields)=>{
+                if(error){ 
+                    return callBack(error);
+                }
+                console.log(match_id)
+                console.log(results)
+                return callBack(null,results);
+
+            }
+
+        )
+        
+    },
+    getPlayerScoreInd:(match_id,player,callBack) =>{
+        // console.log("jknkjnkjnknjkjn")
+        pool.query(
+            `SELECT * FROM player_play_matches WHERE match_id=? AND user_id=?`,
+            [match_id,player],
              
             (error,results,fields)=>{
                 if(error){ 
